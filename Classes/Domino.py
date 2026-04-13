@@ -9,5 +9,11 @@ class Peca:
       dupla == True
     for n in len(valor):  
       match valor[n]:
-        'acido': 
+        case 'acido': 
           random.choise(listaDeAcidos.)
+        case 'basico':
+          random.choise(listaDeBases)
+        case 'sal':
+          random.choise(listaDeSais)
+        case 'oxido':
+          random.choise(listaDeOxidos)
