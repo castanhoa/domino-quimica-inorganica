@@ -1,5 +1,4 @@
 import random
-import Constantes
 class Peca:
   def __init__(self, valor1, valor2)
     self.valor = [valor1, valor2]
