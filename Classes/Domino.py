@@ -40,4 +40,4 @@ class Peca:
           case 'sal':
             random.choice(propriedadesSais)
           case 'oxido':
-            random.choice(propriedadesOxidos
+            random.choice(propriedadesOxidos)
