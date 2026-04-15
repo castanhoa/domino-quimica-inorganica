@@ -18,13 +18,13 @@ class Peca:
       if chance >= probabilidadeFormula
         match self.valor[n]:
           case 'acido':
-            random.choise(formulasAcidos.)
+            random.choice(formulasAcidos.)
           case 'basico':
-            random.choise(formulasBases)
+            random.choice(formulasBases)
           case 'sal':
-            random.choise(formulasSais)
+            random.choice(formulasSais)
           case 'oxido':
-            random.choise(formulasOxidos)
+            random.choice(formulasOxidos)
       elif chance >= probabilidadeFormula + probabilidadeConceito:
       #falta adicionar o código pega a parte da peça com conceito
         match self.valor[n]:
@@ -36,10 +36,10 @@ class Peca:
       else:
         match self.valor[n]:
           case 'acido':
-            random.choise(propriedadesAcidos)
+            random.choice(propriedadesAcidos)
           case 'basico':
-            random.choise(propriedadesBases)
+            random.choice(propriedadesBases)
           case 'sal':
-            random.choise(propriedadesSais)
+            random.choice(propriedadesSais)
           case 'oxido':
-            random.choise(propriedadesOxidos
+            random.choice(propriedadesOxidos
