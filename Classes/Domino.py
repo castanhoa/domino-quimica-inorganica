@@ -1,6 +1,6 @@
 import random
 class Peca:
-  def __init__(self, valor1, valor2)
+  def __init__(self, valor1: str, valor2: str)
     self.valor = [valor1, valor2]
     self.local = 0
 # 0 = monte, 1 = mão do jogador 1, 2 = mão da IA
