@@ -6,5 +6,6 @@ def jogarPeca():
 def checarPeca():
   pass
 def iniciarTela():
+  pass
 #Codigo principal
 pygame.init()
