@@ -1,6 +1,6 @@
 import random
 class Peca:
-  def __init__(self, valor1: str, valor2: str)
+  def __init__(self, valor1: str, valor2: str):
     self.valor = [valor1, valor2]
     self.local = 0
 # 0 = monte, 1 = mão do jogador 1, 2 = mão da IA
@@ -13,7 +13,7 @@ class Peca:
       chance = random.randint(1, 100)
       #escolhe como a peça será mostrada,ainda falta atribuir às peças diretamente aos arquivos de imagem
       #Formulas aleatórias
-      if chance <= probabilidadeFormula
+      if chance <= probabilidadeFormula:
         match self.valor[n]:
           case 'acido':
             random.choice(formulasAcidos)
@@ -27,9 +27,13 @@ class Peca:
       #falta adicionar o código pega a parte da peça com conceito
         match self.valor[n]:
           case 'acido':
+            pass
           case 'basico':
+            pass
           case 'sal':
+            pass
           case 'oxido':
+            pass
        #propriedades     
       else:
         match self.valor[n]:

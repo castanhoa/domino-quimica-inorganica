@@ -13,11 +13,11 @@ def hash_padrao(entrada:str):
         return hashlib.sha256(entrada_bytes)
     except Exception as e:
         raise(e)
-
+    
 def comparar_hashes(hash0, hash1):
     try:
         return secrets.compare_digest(hash0, hash1)
     except Exception as e:
         print(e)
         return False
-    ##
+    ## teste
