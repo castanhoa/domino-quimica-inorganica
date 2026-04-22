@@ -1,4 +1,3 @@
-
 import pygame
 import pygame_gui
 # Inicialização
@@ -8,8 +7,7 @@ largura, altura = 800, 600
 tela = pygame.display.set_mode((largura, altura))
 pygame.display.set_caption("Primeiro front end")
 # Loop principal
-rodando = True
-while rodando:
+while True:
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
             rodando = False
