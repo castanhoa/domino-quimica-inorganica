@@ -20,4 +20,4 @@ def comparar_hashes(hash0, hash1):
     except Exception as e:
         print(e)
         return False
-    ## teste
+    ## teste 2
