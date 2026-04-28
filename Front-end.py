@@ -21,7 +21,7 @@ cor_Botao = (255, 255, 255)
 fonte = pygame.font.SysFont("arial", 20)
 fonte_label = pygame.font.SysFont("arial", 16)
 
-# 🔹 LEGENDAS
+# LEGENDAS
 label_login = fonte_label.render("Login", True, (255, 255, 255))
 label_senha = fonte_label.render("Senha", True, (255, 255, 255))
 
@@ -42,15 +42,15 @@ while rodando:
     cor_login = cor_Ativa if active_login else cor_Inativa
     cor_senha = cor_Ativa if active_senha else cor_Inativa
 
-    # 🔹 DESENHAR LEGENDAS (ANTES DOS INPUTS)
+    # DESENHAR LEGENDAS (ANTES DOS INPUTS)
     tela.blit(label_login, (input_Login.x, input_Login.y - 20))
     tela.blit(label_senha, (input_Senha.x, input_Senha.y - 20))
 
-    # 🔹 INPUT LOGIN
+    # INPUT LOGIN
     pygame.draw.rect(tela, (255, 255, 255), input_Login, border_radius=8)
     pygame.draw.rect(tela, cor_login, input_Login, 2, border_radius=8)
 
-    # 🔹 INPUT SENHA
+    # INPUT SENHA
     pygame.draw.rect(tela, (255, 255, 255), input_Senha, border_radius=8)
     pygame.draw.rect(tela, cor_senha, input_Senha, 2, border_radius=8)
 
@@ -61,7 +61,7 @@ while rodando:
     tela.blit(txt_login_surface, (input_Login.x + 5, input_Login.y + 10))
     tela.blit(txt_senha_surface, (input_Senha.x + 5, input_Senha.y + 10))
 
-    # 🔹 BOTÃO
+    # BOTÃO
     pygame.draw.rect(tela, cor_Botao, botao_Entrar, border_radius=8)
     texto_botao = fonte.render("Entrar", True, (0, 0, 0))
     tela.blit(texto_botao, texto_botao.get_rect(center=botao_Entrar.center))
