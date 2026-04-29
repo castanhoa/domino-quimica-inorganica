@@ -20,18 +20,22 @@ cor_Inativa = pygame.Color(128, 128, 128)
 cor_Botao = (255, 255, 255)
 
 fonte = pygame.font.SysFont("arial", 20)
-fonte_label = pygame.font.SysFont("arial", 16)
+legenda_Fonte = pygame.font.SysFont("arial", 16)
 
 
-label_login = fonte_label.render("Login", True, (255, 255, 255))
-label_senha = fonte_label.render("Senha", True, (255, 255, 255))
+legenda_Login = legenda_Fonte.render("Login", True, (255, 255, 255))
+legenda_Senha = legenda_Fonte.render("Senha", True, (255, 255, 255))
 
 
-active_login = False
-active_senha = False
+caixaLogin_Ativa = False
+caixaSenha_Ativa = False
 
 texto_login = ""
 texto_senha = ""
+
+from Usuario import Usuario
+
+meu_usuario = Usuario("1234","Euclides", False)
 
 rodando = True
 
@@ -40,12 +44,12 @@ while rodando:
     tela.fill((0, 120, 255))
 
 
-    cor_login = cor_Ativa if active_login else cor_Inativa
-    cor_senha = cor_Ativa if active_senha else cor_Inativa
+    cor_login = cor_Ativa if caixaLogin_Ativa else cor_Inativa
+    cor_senha = cor_Ativa if caixaSenha_Ativa else cor_Inativa
 
 
-    tela.blit(label_login, (input_Login.x, input_Login.y - 20))
-    tela.blit(label_senha, (input_Senha.x, input_Senha.y - 20))
+    tela.blit(legenda_Login, (input_Login.x, input_Login.y - 20))
+    tela.blit(legenda_Senha, (input_Senha.x, input_Senha.y - 20))
 
 
     pygame.draw.rect(tela, (255, 255, 255), input_Login, border_radius=8)
@@ -56,11 +60,11 @@ while rodando:
     pygame.draw.rect(tela, cor_senha, input_Senha, 2, border_radius=8)
 
 
-    txt_login_surface = fonte.render(texto_login, True, (0, 0, 0))
-    txt_senha_surface = fonte.render(texto_senha, True, (0, 0, 0))
+    textoLogin_Usuario = fonte.render(texto_login, True, (0, 0, 0))
+    textoSenha_Usuario = fonte.render(texto_senha, True, (0, 0, 0))
 
-    tela.blit(txt_login_surface, (input_Login.x + 5, input_Login.y + 10))
-    tela.blit(txt_senha_surface, (input_Senha.x + 5, input_Senha.y + 10))
+    tela.blit(textoLogin_Usuario, (input_Login.x + 5, input_Login.y + 10))
+    tela.blit(textoSenha_Usuario, (input_Senha.x + 5, input_Senha.y + 10))
 
 
     pygame.draw.rect(tela, cor_Botao, botao_Entrar, border_radius=8)
@@ -73,22 +77,25 @@ while rodando:
 
         if evento.type == pygame.MOUSEBUTTONDOWN:
             if botao_Entrar.collidepoint(evento.pos):
-                if texto_login == "Caio" and texto_senha == "1234":
-                    print("Usuário logado")
-                else:
-                    print("Login ou senha incorretos")
 
-            active_login = input_Login.collidepoint(evento.pos)
-            active_senha = input_Senha.collidepoint(evento.pos)
+                logado = meu_usuario.tentar_login(senha=texto_senha, nome=texto_login)
+                
+                if logado == True:
+                    print("Usuário logado!")
+                else:
+                    print("O login ou senha incorretos!")
+
+            caixaLogin_Ativa = input_Login.collidepoint(evento.pos)
+            caixaSenha_Ativa = input_Senha.collidepoint(evento.pos)
 
         if evento.type == pygame.KEYDOWN:
-            if active_login:
+            if caixaLogin_Ativa:
                 if evento.key == pygame.K_BACKSPACE:
                     texto_login = texto_login[:-1]
                 else:
                     texto_login += evento.unicode
 
-            if active_senha:
+            if caixaSenha_Ativa:
                 if evento.key == pygame.K_BACKSPACE:
                     texto_senha = texto_senha[:-1]
                 else:
