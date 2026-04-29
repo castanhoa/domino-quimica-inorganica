@@ -10,7 +10,7 @@ def hash_padrao(entrada:str):
         entrada_bytes = entrada.encode('utf-8')
 
     try:
-        return hashlib.sha256(entrada_bytes)
+        return hashlib.sha256(entrada_bytes).hexdigest()
     except Exception as e:
         raise(e)
     
