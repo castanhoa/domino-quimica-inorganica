@@ -6,21 +6,39 @@ correspondecias = { 'Acido':['HCN','Hl','H2S','HF','H2CrO4'],
 'Oxido':['SiO2','TiO','P2O3','CrO3','V2O5'],
 'Sal':['Na2CO3','FeCl3','NaBrO4','HClO4','NaCl']}
 
-def get_key(my_dict, search_value):
-  for key, value in my_dict.items():
-      if value == search_value:
-          return key
-      
-def forma_mostrar(chance_formula, chance_conceito):
-   pass
-   
+possibilidades = [
+['Sal', 'Na2CO3'],
+['Oxido', 'Sal'],
+['Oxido', 'SiO2'],
+['Oxido', 'Base'],
+['Base', "Cr(OH)3"],
+['Base', 'Fe(OH)3'],
+['Acido', 'Base'],
+['Acido', 'HCN'],
+['Acido', 'Hidreto'],
+['Hidreto', 'CaH2'],
+['Hidreto', 'NH3'],
+['Hidreto', 'HCl'],
+['Oxido', 'Hidreto'],
+['Oxido', 'TiO'],
+
+]
 
 class Pedra:
-  def __init__(self):
-    self.elemento_0 = random.choice()
+  def __init__(self, valores:list):
+    self.valor_0 = valores[0]
+    self.valor_1 = valores[1]
 
-    self.elemento_1 = 
 
+def obter_todas_pedras(quantia:int):
+  pedras_lista = []
+
+  padras_valores = random.sample(possibilidades, quantia)
+
+  for indice in range(quantia):
+    pedras_lista[indice] = Pedra(padras_valores[indice])
+
+  return pedras_lista
 
 
 
