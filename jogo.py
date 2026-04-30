@@ -1,6 +1,6 @@
 import pygame
-import Usuario.py
-import Domino.py
+import Usuario
+import Domino
 def jogarPeca():
   pass
 def checarPeca():

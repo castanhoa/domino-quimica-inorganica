@@ -1,0 +1,29 @@
+Dúvidas:
+    Para a ETEC:
+        - Teremos que criar cada perfil de Usuário, ou deixaremos isto para a ETEC fazer?
+
+    Para nós:
+        - Como melhoraremos o sistema de progressão de dificuldade?
+        - Como melhoraremos o sistema de seleção e inicialização de pedras?
+
+
+Base: https://www.sbgames.org/sbgames2017/papers/ArtesDesignShort/174212.pdf
+
+Identidade visual: https://cps.sp.gov.br/guia-estilo/cores.php
+
+Requisitos Funcionais:
+    O sistema deve apresentar peças de dominó digitais contendo informações químicas (fórmulas, nomes, propriedades ou classificações).
+    O jogo deve permitir que o aluno conecte peças somente quando houver correspondência conceitual correta.
+    O sistema deve validar automaticamente as conexões realizadas pelo jogador.
+    O jogo deve possuir níveis progressivos de dificuldade (ex.: inicialmente fórmula ↔ função, depois propriedades ↔ classificação).
+    O sistema deve registrar tempo de partida e número de acertos/erros.
+    O sistema deve possuir autenticação simples de usuários (aluno/professor) para permitir acompanhamento individual do desempenho.
+    O sistema deve disponibilizar relatórios básicos de desempenho por aluno
+ 
+
+Requisitos Não Funcionais:
+    O sistema deve possuir interface intuitiva e adequada a estudantes do ensino médio.
+    O jogo deve funcionar em computadores.
+    O jogo deve armazenar dados de desempenho dos alunos para análise pedagógica.
+    O software deve seguir boas práticas de acessibilidade (contraste, fontes legíveis, descrição de imagens).
+    O sistema deve garantir privacidade e proteção dos dados dos alunos, conforme boas práticas de segurança e LGPD

@@ -24,6 +24,8 @@ possibilidades = [
 
 ]
 
+len_possibilidades = len(possibilidades)
+
 class Pedra:
   def __init__(self, valores:list):
     self.valor_0 = valores[0]
@@ -31,6 +33,14 @@ class Pedra:
 
 
 def obter_todas_pedras(quantia:int):
+
+  possibilidades_atual = possibilidades.copy()
+
+  if quantia > len_possibilidades:
+    delta = quantia - len_possibilidades
+    for _ in range(delta):
+      possibilidades_atual.append(random.choice(possibilidades))
+
   pedras_lista = []
 
   padras_valores = random.sample(possibilidades, quantia)
