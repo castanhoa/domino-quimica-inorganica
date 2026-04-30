@@ -8,11 +8,11 @@ pygame.display.set_caption("Tela de Login")
 
 clock = pygame.time.Clock()
 
-botao_Entrar = pygame.Rect(300, 375, 200, 50)
+botao_Entrar = pygame.Rect(300, 450, 200, 50)
 
 
-input_Login = pygame.Rect(300, 130, 200, 50)
-input_Senha = pygame.Rect(300, 220, 200, 50)
+input_Login = pygame.Rect(300, 225, 200, 50)
+input_Senha = pygame.Rect(300, 300, 200, 50)
 
 cor_Ativa = pygame.Color(0, 0, 0)
 cor_Inativa = pygame.Color(128, 128, 128)
@@ -21,11 +21,11 @@ cor_Botao = (255, 255, 255)
 
 fonte = pygame.font.SysFont("arial", 20)
 legenda_Fonte = pygame.font.SysFont("arial", 16)
+titulo_Fonte = pygame.font.SysFont("arial", 30)
 
-
+legenda_ETEC = titulo_Fonte.render("ETEC Júlio de Mesquita", True, (255, 255, 255))
 legenda_Login = legenda_Fonte.render("Login", True, (255, 255, 255))
 legenda_Senha = legenda_Fonte.render("Senha", True, (255, 255, 255))
-
 
 caixaLogin_Ativa = False
 caixaSenha_Ativa = False
@@ -47,7 +47,7 @@ while rodando:
     cor_login = cor_Ativa if caixaLogin_Ativa else cor_Inativa
     cor_senha = cor_Ativa if caixaSenha_Ativa else cor_Inativa
 
-
+    tela.blit(legenda_ETEC, (275, 100))
     tela.blit(legenda_Login, (input_Login.x, input_Login.y - 20))
     tela.blit(legenda_Senha, (input_Senha.x, input_Senha.y - 20))
 
