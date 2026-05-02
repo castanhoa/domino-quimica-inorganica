@@ -31,6 +31,31 @@ class Pedra:
     self.valor_0 = valores[0]
     self.valor_1 = valores[1]
 
+    self.valor_0_conexao = None
+    self.valor_1_conexao = None
+
+    self.pedras_conectadas = []
+
+def obter_funcao_elemento(valor:str):
+  dicts_keys_list = list(dict.keys())
+
+  if valor in dicts_keys_list:
+    return valor
+  else:
+    for key, array in correspondecias.items():
+      for elemento in array:
+        if elemento == valor:
+          return key
+
+def e_compativel(valor_a:str, valor_b:str):
+  funcao_valor_a = obter_funcao_elemento(valor=valor_a)
+  funcao_valor_b = obter_funcao_elemento(valor=valor_b)
+
+  if funcao_valor_a == funcao_valor_b:
+    return True
+  else:
+   return False
+
 
 def obter_todas_pedras(quantia:int):
 
