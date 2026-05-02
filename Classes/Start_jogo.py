@@ -1,6 +1,6 @@
 import Domino
 import random
-
+import copy
 
 quantia_total_pedras = 14
 
@@ -31,7 +31,8 @@ def conectar_pedras(pedra_a, pedra_a_valor_0,  pedra_b, pedra_b_valor_0):
 class Jogo:
     def __init__(self):
 
-        todas_pedras = Domino.obter_todas_pedras(quantia_total_pedras)
+        self.todas_pedras_originais = Domino.obter_todas_pedras(quantia_total_pedras)
+        todas_pedras = copy.copy(self.todas_pedras_originais)
 
         self.monte = random.sample(todas_pedras, quantia_total_pedras // 2) # inicializar o monte
         todas_pedras = sub_lists(todas_pedras, self.monte)
@@ -39,23 +40,26 @@ class Jogo:
         self.jogador_principal = self.Jogador(jogo=self, apelido="Jogador principal")
         jog_princ_pedras = random.sample(todas_pedras, quantia_total_pedras // 4)
         self.jogador_principal.inicializar_pedras( jog_princ_pedras )
-        todas_pedras = sub_lists(todas_pedras, self.jogador_principal.pedras)
+        todas_pedras = sub_lists(todas_pedras, self.jogador_principal.get_pedras())
 
 
         self.jogador_IA = self.Jogador(jogo=self, apelido="Maquina")
         jog_ia_pedras = random.sample(todas_pedras, quantia_total_pedras // 4)
         self.jogador_IA.inicializar_pedras(jog_ia_pedras)
-        # todas_pedras = sub_lists(todas_pedras, self.jogador_IA.pedras)
+        todas_pedras = sub_lists(todas_pedras, self.jogador_IA.get_pedras())
 
     class Jogador:
         def __init__(self, jogo, apelido):
             self.jogo = jogo
-            self.___pedras = []
+            self.__pedras = []
             self.__apelido = apelido
         
         def inicializar_pedras(self, minhas_pedras:list):
             if len(self.__pedras) == 0:
                 self.___pedras = minhas_pedras
+
+        def get_pedras(self):
+            return copy.copy(self.___pedras)
 
         def comprar_pedra(self):
             if len(self.jogo.monte) > 0:
@@ -100,4 +104,37 @@ class Jogo:
 
                     if dupla == True:
                         conectar_pedras (pedra_a=minha_pedra, pedra_a_valor_0=True, pedra_b=pedra_conexao, pedra_b_valor_0=False)
-                    
+            else:
+                print("Não conseguiu conectar.")
+                return False
+            
+            print("Conseguiu conectar!")
+            return self.___pedras.pop(indice_minha_pedra)
+
+meu_jogo = Jogo()
+
+meu_jogador = meu_jogo.jogador_principal
+
+def exibir_lista_pedras(minhas_pedras):
+    for i, pedra in enumerate(minhas_pedras):
+        print(f"--[ PEDRA {i} ]--")
+        print(pedra.valor_0, " /", pedra.valor_1, "\n")
+
+# LOOP PARA FINS DE TESTE.
+# MUDE PARA True CASO QUEIRA TESTAR.
+while False:
+    print("TODAS AS PEDRAS: ")
+    exibir_lista_pedras(meu_jogo.todas_pedras_originais)
+
+    print("MINHAS PEDRAS: ")
+    exibir_lista_pedras(meu_jogador.get_pedras())
+
+    pedra_conectar_0 = int(input("Digite o indice da sua pedra para conectar: "))
+
+    pedra_conectar_1 = int(input("Digite o indice da outra pedra para conectar: "))
+    outra_pedra = meu_jogo.todas_pedras_originais[pedra_conectar_1]
+
+    meu_jogador.inserir_pedra(pedra_conectar_0, outra_pedra)
+
+
+

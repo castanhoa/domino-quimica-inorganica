@@ -37,7 +37,7 @@ class Pedra:
     self.pedras_conectadas = []
 
 def obter_funcao_elemento(valor:str):
-  dicts_keys_list = list(dict.keys())
+  dicts_keys_list = list(correspondecias.keys())
 
   if valor in dicts_keys_list:
     return valor
@@ -71,7 +71,7 @@ def obter_todas_pedras(quantia:int):
   padras_valores = random.sample(possibilidades, quantia)
 
   for indice in range(quantia):
-    pedras_lista[indice] = Pedra(padras_valores[indice])
+    pedras_lista.append(Pedra(padras_valores[indice]))
 
   return pedras_lista
 
