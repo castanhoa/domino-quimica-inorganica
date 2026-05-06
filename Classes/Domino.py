@@ -40,10 +40,8 @@ def e_compativel(valor_a:str, valor_b:str):
   funcao_valor_a = obter_funcao_elemento(valor=valor_a)
   funcao_valor_b = obter_funcao_elemento(valor=valor_b)
 
-  if funcao_valor_a == funcao_valor_b:
-    return True
-  else:
-   return False
+  return funcao_valor_a == funcao_valor_b
+
   
 def obter_descendente_correspondencias(key:str):
   if key in correspondecias.keys():
@@ -54,21 +52,31 @@ def obter_descendente_correspondencias(key:str):
 chance_aparecer_formulas = 0.5
 def inicializar_pedra(valores_raw:list):
   valor_0 = valores_raw[0]
-  valor_1 = valores_raw[1]
+  if random.random() <= chance_aparecer_formulas:
+    valor_0 = obter_descendente_correspondencias(valor_0)
 
-  espaco_amostral = [obter_descendente_correspondencias(valor_0), obter_descendente_correspondencias(valor_1)]
+  valor_1 = valores_raw[1]
+  if random.random() <= chance_aparecer_formulas:
+    valor_1 = obter_descendente_correspondencias(valor_1)
+
+  espaco_amostral = [valor_0, valor_1]
 
   valores_cooked = random.sample(espaco_amostral, 2)
-
 
   return valores_cooked
 
 def obter_todas_pedras():
   pedra_lista = []
+
   for id in range(1, NUMERO_DE_PEDRAS + 1):
     pedra_atual = Banco.pegar_valor('pecas', id)
-    pedra_lista.append(Pedra(pedra_atual))
+
+    pedra_processada = inicializar_pedra(pedra_atual)
+    
+    pedra_lista.append(Pedra(pedra_processada))
+
   random.shuffle(pedra_lista)
+
   return pedra_lista
 
 # 
