@@ -1,5 +1,6 @@
 import random
-
+import Banco
+NUMERO_DE_PEDRAS = 32
 correspondecias = { 'Acido':['HCN','Hl','H2S','HF','H2CrO4'], 
 'Base':['Fe(OH)3','Cr(OH)3','Ba(OH)2','Fe(OH)3','Cr(OH)3'],
 'Hidreto':['NH3','CaH2','HCl','H2O','CaH2'],
@@ -58,33 +59,31 @@ def e_compativel(valor_a:str, valor_b:str):
 
 
 def obter_todas_pedras(quantia:int):
+  pedra_lista = []
+  for id in range(1, NUMERO_DE_PEDRAS + 1):
+    pedra_atual = Banco.pegar_valor('pecas', id)
+    pedra_lista.append(Pedra(pedra_atual))
+  random.shuffle(pedra_lista)
+  return pedra_lista
+  # possibilidades_atual = possibilidades.copy()
 
-  possibilidades_atual = possibilidades.copy()
+  # if quantia > len_possibilidades:
+  #   delta = quantia - len_possibilidades
+  #   for _ in range(delta):
+  #     possibilidades_atual.append(random.choice(possibilidades))
 
-  if quantia > len_possibilidades:
-    delta = quantia - len_possibilidades
-    for _ in range(delta):
-      possibilidades_atual.append(random.choice(possibilidades))
+  # pedras_lista = []
 
-  pedras_lista = []
+  # padras_valores = random.sample(possibilidades, quantia)
 
-  padras_valores = random.sample(possibilidades, quantia)
+  # for indice in range(quantia):
+  #   pedras_lista.append(Pedra(padras_valores[indice]))
 
-  for indice in range(quantia):
-    pedras_lista.append(Pedra(padras_valores[indice]))
-
-  return pedras_lista
+  # return pedras_lista
 
 
 
-#   def __init__(self, valor1: str, valor2: str)
-#     self.valor = [valor1, valor2]
-#     self.local = 0
-# # 0 = monte, 1 = mão do jogador 1, 2 = mão da IA
-#     if valor1 == valor2:
-#       self.dupla =  True
-#     else:
-#       self.dupla = False
+# 
 #   def forma(self):
 #     for n in range(2):
 #       chance = random.randint(1, 100)
