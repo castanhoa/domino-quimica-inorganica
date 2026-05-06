@@ -27,3 +27,13 @@ Requisitos Não Funcionais:
     O jogo deve armazenar dados de desempenho dos alunos para análise pedagógica.
     O software deve seguir boas práticas de acessibilidade (contraste, fontes legíveis, descrição de imagens).
     O sistema deve garantir privacidade e proteção dos dados dos alunos, conforme boas práticas de segurança e LGPD
+
+Breve relatório com as principais informações obtidas no primeiro encontro com o parceiro:
+•	Plataforma: Aplicação desktop
+•	Modos de jogo: Fórmula/Conceito, Conceito/Propriedade, Propriedade/Fórmula
+•	Deve haver diferenciação entre aluno e professor
+•	Porcentagem de acertos quanto aos diferentes compostos
+•	Diferentes modos de dificuldade, mudando a forma de associar os compostos inorgânicos
+•	Usuários: Alunos do 2º ano do ensino médio da ETEC
+•	1 jogador contra 1 robô (PvE)
+•	Dificuldade aumenta progressivamente conforme o jogador vence
