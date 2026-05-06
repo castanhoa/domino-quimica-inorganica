@@ -31,7 +31,7 @@ def conectar_pedras(pedra_a, pedra_a_valor_0,  pedra_b, pedra_b_valor_0):
 class Jogo:
     def __init__(self):
 
-        self.todas_pedras_originais = Domino.obter_todas_pedras(quantia_total_pedras)
+        self.todas_pedras_originais = Domino.obter_todas_pedras()
         todas_pedras = copy.copy(self.todas_pedras_originais)
 
         self.monte = random.sample(todas_pedras, quantia_total_pedras // 2) # inicializar o monte

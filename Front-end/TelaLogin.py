@@ -1,4 +1,10 @@
 import pygame
+
+from pathlib import Path
+import sys
+
+sys.path.append(str(Path('.').parent))
+
 from Tela import classeTela
 from Usuario import Usuario
 
