@@ -1,31 +1,20 @@
 import random
 import Banco
 NUMERO_DE_PEDRAS = 32
-correspondecias = { 'Acido':['HCN','Hl','H2S','HF','H2CrO4'], 
-'Base':['Fe(OH)3','Cr(OH)3','Ba(OH)2','Fe(OH)3','Cr(OH)3'],
-'Hidreto':['NH3','CaH2','HCl','H2O','CaH2'],
+
+correspondecias = {
+  
+'Acido':['HCl', 'HCN','Hl','H2S','HF','H2CrO4', 'Liberam H+ em solução aquosa', 'Geralmente são azedos'], 
+                   
+'Base':['NH3','Fe(OH)3','Cr(OH)3','Ba(OH)2','Fe(OH)3','Cr(OH)3', 'Liberam íons hidroxila em solução aquosa', 'Geralmente são amargos'],
+
+'Hidreto':['CaH2','H2O'],
+
 'Oxido':['SiO2','TiO','P2O3','CrO3','V2O5'],
-'Sal':['Na2CO3','FeCl3','NaBrO4','HClO4','NaCl']}
 
-possibilidades = [
-['Sal', 'Na2CO3'],
-['Oxido', 'Sal'],
-['Oxido', 'SiO2'],
-['Oxido', 'Base'],
-['Base', "Cr(OH)3"],
-['Base', 'Fe(OH)3'],
-['Acido', 'Base'],
-['Acido', 'HCN'],
-['Acido', 'Hidreto'],
-['Hidreto', 'CaH2'],
-['Hidreto', 'NH3'],
-['Hidreto', 'HCl'],
-['Oxido', 'Hidreto'],
-['Oxido', 'TiO'],
+'Sal':['Na2CO3','FeCl3','NaBrO4','HClO4','NaCl','Normalmente tem sabor salgado', 'Não são bons condutores de eletricidade, salvo quando estão dissolvidos em água']
 
-]
-
-len_possibilidades = len(possibilidades)
+}
 
 class Pedra:
   def __init__(self, valores:list):
@@ -44,8 +33,7 @@ def obter_funcao_elemento(valor:str):
     return valor
   else:
     for key, array in correspondecias.items():
-      for elemento in array:
-        if elemento == valor:
+        if valor in array:
           return key
 
 def e_compativel(valor_a:str, valor_b:str):
@@ -56,15 +44,33 @@ def e_compativel(valor_a:str, valor_b:str):
     return True
   else:
    return False
+  
+def obter_descendente_correspondencias(key:str):
+  if key in correspondecias.keys():
+    return random.choice(correspondecias[key])
+  else:
+    raise ValueError(f"Chave {key} inválida para o dicionário correspondencias.")
+
+chance_aparecer_formulas = 0.5
+def inicializar_pedra(valores_raw:list):
+  valor_0 = valores_raw[0]
+  valor_1 = valores_raw[1]
+
+  espaco_amostral = [obter_descendente_correspondencias(valor_0), obter_descendente_correspondencias(valor_1)]
+
+  valores_cooked = random.sample(espaco_amostral, 2)
 
 
-def obter_todas_pedras(quantia:int):
+  return valores_cooked
+
+def obter_todas_pedras():
   pedra_lista = []
   for id in range(1, NUMERO_DE_PEDRAS + 1):
     pedra_atual = Banco.pegar_valor('pecas', id)
     pedra_lista.append(Pedra(pedra_atual))
   random.shuffle(pedra_lista)
   return pedra_lista
+
 # 
 #   def forma(self):
 #     for n in range(2):
