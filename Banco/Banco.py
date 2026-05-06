@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Caminho do banco de dados
 # ---------------------------------------------------------------------------
-DB_PATH = "app.db"
+DB_PATH = "jogo_peca.sql"
 
 # ---------------------------------------------------------------------------
 # Conexão
@@ -70,10 +70,10 @@ def fetch_all(table: str, filters: dict = None, limit: int = 100) -> list:
         return conn.execute(query, params).fetchall()
 
 
-def fetch_one(table: str, record_id: int) -> sqlite3.Row:
+def pegar_valor(table: str, record_id: int) -> list:
     with get_connection() as conn:
         return conn.execute(
-            f"SELECT * FROM {table} WHERE id = ?", (record_id,)
+            f"SELECT value_1, value_2 FROM {table} WHERE id = ?", (record_id,)
         ).fetchone()
 
 
@@ -91,28 +91,3 @@ def update(table: str, record_id: int, data: dict) -> None:
 def delete(table: str, record_id: int) -> None:
     with get_connection() as conn:
         conn.execute(f"DELETE FROM {table} WHERE id = ?", (record_id,))
-
-
-# ---------------------------------------------------------------------------
-# Exemplo de uso (execução direta)
-# ---------------------------------------------------------------------------
-if __name__ == "__main__":
-    init_db()
-
-    id1 = insert("events", {"event_type": "clique",    "description": "Botão salvar pressionado", "user_id": 1})
-    id2 = insert("events", {"event_type": "navegacao", "description": "Tela de relatórios aberta", "user_id": 1})
-    id3 = insert("events", {"event_type": "clique",    "description": "Botão cancelar pressionado", "user_id": 2})
-
-    print("\n--- Eventos do tipo 'clique' ---")
-    for row in fetch_all("events", filters={"event_type": "clique"}):
-        print(dict(row))
-
-    print("\n--- Evento id=2 ---")
-    print(dict(fetch_one("events", id2)))
-
-    update("events", id1, {"description": "Botão salvar — atualizado"})
-    delete("events", id3)
-
-    print("\n--- Todos os eventos ---")
-    for row in fetch_all("events"):
-        print(dict(row))

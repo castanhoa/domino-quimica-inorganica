@@ -65,24 +65,6 @@ def obter_todas_pedras(quantia:int):
     pedra_lista.append(Pedra(pedra_atual))
   random.shuffle(pedra_lista)
   return pedra_lista
-  # possibilidades_atual = possibilidades.copy()
-
-  # if quantia > len_possibilidades:
-  #   delta = quantia - len_possibilidades
-  #   for _ in range(delta):
-  #     possibilidades_atual.append(random.choice(possibilidades))
-
-  # pedras_lista = []
-
-  # padras_valores = random.sample(possibilidades, quantia)
-
-  # for indice in range(quantia):
-  #   pedras_lista.append(Pedra(padras_valores[indice]))
-
-  # return pedras_lista
-
-
-
 # 
 #   def forma(self):
 #     for n in range(2):
