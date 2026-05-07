@@ -18,17 +18,24 @@ class TelaDeJogo(classeTela):
     def desenhar(self):
         self.tela.fill((0, 120, 255))
 
-        pecaPlayer = pygame.image.load(r'C:\Users\26.01448-0\Desktop\PecaDomino.png')
-        pecaBot = pygame.image.load(r'C:\Users\26.01448-0\Desktop\PecaBot.png')
+        pecaPlayer = pygame.image.load(r"C:\Users\26.01448-0\Desktop\PecaPlayer.png")
+        pecaBot = pygame.image.load(r"C:\Users\26.01448-0\Desktop\PecaBot.png")
+        MontePecas = pygame.image.load(r"C:\Users\26.01448-0\Desktop\MontePecas.png")
+        mesaJogo = pygame.image.load(r"C:\Users\26.01448-0\Desktop\MesaJogo.jpg")
 
         pecaPlayer_redimensionada = pygame.transform.scale(pecaPlayer, (70, 140))
         pecaBot_redimensionada = pygame.transform.scale(pecaBot, (50, 100))
+        monte_redimensionado = pygame.transform.scale(MontePecas, (150, 200))
+
 
         xPecaPlayer = 620
         yPecaPlayer = 725
 
         xPecaBot = 690
         yPecaBot = 100
+
+        self.tela.blit(monte_redimensionado, (1400, 500))
+        self.tela.blit(mesaJogo, (650, 300))
 
         for i in range(0, 7):
             self.tela.blit(pecaPlayer_redimensionada, (xPecaPlayer, yPecaPlayer))
