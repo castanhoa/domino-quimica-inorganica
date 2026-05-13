@@ -12,9 +12,9 @@ class TelaLogin(classeTela):
     def __init__(self):
         super().__init__(800, 600, "")
 
-        self.input_Login = pygame.Rect(300, 225, 200, 50)
-        self.input_Senha = pygame.Rect(300, 300, 200, 50)
-        self.botao_Entrar = pygame.Rect(300, 450, 200, 50)
+        self.registrar_rect("input_Login", 300, 225, 200, 50)
+        self.registrar_rect("input_Senha", 300, 300, 200, 50)
+        self.registrar_rect("botao_Entrar", 300, 450, 200, 50)
 
         self.cor_Ativa = pygame.Color(0, 0, 0)
         self.cor_Inativa = pygame.Color(128, 128, 128)
@@ -30,9 +30,9 @@ class TelaLogin(classeTela):
         self.legenda_Fonte = pygame.font.SysFont("arial", 16)
         self.titulo_Fonte = pygame.font.SysFont("arial", 30)
 
-        self.legenda_ETEC = self.titulo_Fonte.render("ETEC Júlio de Mesquita", True, (255, 255, 255))
-        self.legenda_Login = self.legenda_Fonte.render("Login", True, (255, 255, 255))
-        self.legenda_Senha = self.legenda_Fonte.render("Senha", True, (255, 255, 255))
+        self.legenda_ETEC = self.titulo_Fonte.render("ETEC Júlio de Mesquita", True, (0, 0, 0))
+        self.legenda_Login = self.legenda_Fonte.render("Login", True, (0, 0, 0))
+        self.legenda_Senha = self.legenda_Fonte.render("Senha", True, (0, 0, 0))
 
         self.placeholder_login = "Digite seu login"
         self.placeholder_senha = "Digite sua senha"
@@ -51,6 +51,13 @@ class TelaLogin(classeTela):
 
         self.usuario = Usuario("1234", "Euclides", False)
 
+        self.logo = pygame.image.load(r"C:\Users\26.01448-0\Desktop\Logotipo.png")
+        self.transparente = pygame.image.load(r"C:\Users\26.01448-0\Desktop\Transparente.png")
+
+        pygame.display.set_icon(self.transparente)
+
+
+
     def fazer_login(self):
         logado = self.usuario.tentar_login(
             nome=self.texto_login,
@@ -59,7 +66,7 @@ class TelaLogin(classeTela):
 
         if logado:
             self.mensagem = "Login realizado com sucesso!"
-            self.cor_mensagem = (0, 255, 0)
+            self.cor_mensagem = (0, 100, 0)
         else:
             self.mensagem = "Login ou senha incorretos!"
             self.cor_mensagem = (255, 0, 0)
@@ -89,8 +96,17 @@ class TelaLogin(classeTela):
                     self.texto_senha += evento.unicode
 
     def desenhar(self):
-        self.tela.fill((0, 120, 255))
+        self.tela.fill((255, 255, 255))
         mouse_pos = pygame.mouse.get_pos()
+
+        largura = self.tela.get_width()
+        altura = self.tela.get_height()
+
+        tamanho_faixa = int(altura * 0.15)
+        y_faixa = int(altura * 0)
+        
+        pygame.draw.rect(self.tela,(255, 0, 0),(0, y_faixa, largura, tamanho_faixa))
+        self.tela.blit(self.logo, (50, 175))
 
         self.cursor_timer += 1
         if self.cursor_timer >= 30:
@@ -110,7 +126,9 @@ class TelaLogin(classeTela):
 
         cor_botao = tuple(int(c) for c in self.cor_botao_atual)
 
-        self.tela.blit(self.legenda_ETEC, (275, 100))
+        titulo_rect = self.legenda_ETEC.get_rect(center=(self.tela.get_width() // 2, int(self.tela.get_height() * 0.26)))
+        
+        self.tela.blit(self.legenda_ETEC, titulo_rect)
         self.tela.blit(self.legenda_Login, (self.input_Login.x, self.input_Login.y - 20))
         self.tela.blit(self.legenda_Senha, (self.input_Senha.x, self.input_Senha.y - 20))
 
@@ -156,12 +174,15 @@ class TelaLogin(classeTela):
                     pygame.draw.line(self.tela, (0, 0, 0), (x, y), (x, y + 25), 2)
 
         pygame.draw.rect(self.tela, cor_botao, self.botao_Entrar, border_radius=8)
+        pygame.draw.rect(self.tela, (128, 128, 128), self.botao_Entrar, 2, border_radius=8)
+
         texto_botao = self.fonte.render("Entrar", True, (0, 0, 0))
         self.tela.blit(texto_botao, texto_botao.get_rect(center=self.botao_Entrar.center))
 
         if self.mensagem != "":
             texto_msg = self.fonte.render(self.mensagem, True, self.cor_mensagem)
-            self.tela.blit(texto_msg, (300, 520))
+            msg_rect = texto_msg.get_rect(center=(self.tela.get_width() // 2, int(self.tela.get_height() * 0.87)))
+            self.tela.blit(texto_msg, msg_rect)
 
 tela = TelaLogin()
 tela.executar()
