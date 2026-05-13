@@ -54,17 +54,15 @@ def insert(table: str, data: dict) -> int:
         return cursor.lastrowid
 
 
-def fetch_all(table: str, filters: dict = None, limit: int = 100) -> list:
-    query = f"SELECT * FROM {table} WHERE 1=1"
+def dados_alunos(Dado, sala, filters: dict = None) -> list:
+    query = f"SELECT nome_aluno, tempo_jogado, num_partidas FROM alunos WHERE id_sala = {sala}"
     params = []
 
     if filters:
         for column, value in filters.items():
             query += f" AND {column} = ?"
-            params.append(value)
 
-    query += f" ORDER BY id DESC LIMIT ?"
-    params.append(limit)
+    query += f" ORDER BY {Dado}"
 
     with get_connection() as conn:
         return conn.execute(query, params).fetchall()
