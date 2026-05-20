@@ -1,8 +1,6 @@
 import pygame
 import Usuario
 import Domino
-def jogarPeca():
-  pass
 def checarPeca():
   pass
 def iniciarTela():

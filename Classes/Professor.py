@@ -8,9 +8,5 @@ class Professor(Usuario):
     # esqueleto apenas. nada pronto.
     def ver_turma(id_turma:int):
         pass
-
-    def adicionar_peca(dado_0:str , dado_1:str):
-        pass
-
     def remover_peca(id_peca):
         pass

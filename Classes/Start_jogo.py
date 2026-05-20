@@ -108,6 +108,9 @@ class Jogo:
                 self.inserir_pedra(indice_minha_pedra=indice_minha_pedra, pedra_conexao=pedra_conexao, cima=cima)
                 
                 return True
+            elif len(self.monte) > 0 :
+                self.comprar_pedra()
+                return True
             else:
                 return False
 

@@ -48,5 +48,13 @@ CREATE TABLE sala IF NOT EXISTS (
 CREATE TABLE aluno IF NOT EXISTS (
     id_aluno INTEGER PRIMARY KEY,
     nome_aluno VARCHAR(70),
-    pontuacao INTEGER DEFAULT
+    pontuacao INTEGER DEFAULT 0,
+    tempo TIME DEFAULT '00-00-00',
+    partidas INTEGER DEFAULT 0
+    id_sala INTEGER FOREIGN KEY REFERENCES sala
+)
+
+CREATE TABLE profesor IF NOT EXISTS (
+    id_prof INTEGER;
+    id_sala INTEGER FOREIGN KEY REFERENCES sala
 )
