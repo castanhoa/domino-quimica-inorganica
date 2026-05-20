@@ -1,11 +1,6 @@
 import random
 
-from pathlib import Path
-import sys
-
-sys.path.append(str(Path('.').parent))
-
-from Banco import Banco
+import Banco
 
 NUMERO_DE_PEDRAS = 32
 
@@ -32,6 +27,9 @@ class Pedra:
     self.valor_1_conexao = None
 
     self.pedras_conectadas = []
+
+  def __str__(self):
+    return f"({self.valor_0} / {self.valor_1})"
 
 def obter_funcao_elemento(valor:str):
   dicts_keys_list = list(correspondecias.keys())

@@ -1,60 +1,54 @@
-CREATE SCHEMA jogo;
-use jogo;
-SET FOREIGN_KEY_CHECKS = 1 ;
-SET SQL_SAFE_UPDATES = 0 ;
-SELECT @@default_storage_engine ;
-DROP TABLE IF EXISTS pecas;
-CREATE TABLE pecas(
-    id TINYINT AUTO_INCREMENT PRIMARY KEY,
-    value_1 VARCHAR(5) NOT NULL,
-    value_2 VARCHAR(5) NOT NULL
-);
-INSERT INTO pecas VALUES
-(DEFAULT,'Base', 'Acido'),
-(DEFAULT,'Base', 'Base'),
-(DEFAULT, 'Base', 'Oxido'),
-(DEFAULT,'Base', 'Sal'),
-(DEFAULT,'Base', 'Sal'),
-(DEFAULT,'Base', 'Oxido'),
-(DEFAULT,'Base', 'Base'),
-(DEFAULT,'Base', 'Acido'),
-(DEFAULT,'Acido', 'Acido'),
-(DEFAULT,'Acido', 'Base'),
-(DEFAULT,'Acido', 'Oxido'),
-(DEFAULT,'Acido', 'Sal'),
-(DEFAULT,'Acido', 'Acido'),
-(DEFAULT,'Acido', 'Base'),
-(DEFAULT,'Acido', 'Oxido'),
-(DEFAULT, 'Acido', 'Sal'),
-(DEFAULT, 'Sal', 'Acido'),
-(DEFAULT, 'Sal', 'Base'),
-(DEFAULT,'Sal', 'Sal'),
-(DEFAULT, 'Sal', 'Oxido'),
-(DEFAULT, 'Sal', 'Acido'),
-(DEFAULT, 'Sal', 'Base'),
-(DEFAULT, 'Sal', 'Sal'),
-(DEFAULT, 'Sal', 'Oxido'),
-(DEFAULT, 'Oxido', 'Acido'),
-(DEFAULT, 'Oxido', 'Base'),
-(DEFAULT, 'Oxido', 'Sal'),
-(DEFAULT, 'Oxido', 'Oxido'),
-(DEFAULT, 'Oxido', 'Acido'),
-(DEFAULT, 'Oxido', 'Base'),
-(DEFAULT, 'Oxido', 'Sal'),
-(DEFAULT, 'Oxido', 'Oxido');
-CREATE TABLE sala IF NOT EXISTS (
-    id_sala INTEGER PRIMARY KEY,
-)
-CREATE TABLE aluno IF NOT EXISTS (
-    id_aluno INTEGER PRIMARY KEY,
-    nome_aluno VARCHAR(70),
-    pontuacao INTEGER DEFAULT 0,
-    tempo TIME DEFAULT '00-00-00',
-    partidas INTEGER DEFAULT 0
-    id_sala INTEGER FOREIGN KEY REFERENCES sala
-)
+-- SQLite não possui CREATE SCHEMA nem USE
+-- O banco é definido pelo arquivo .db conectado pela aplicação
 
-CREATE TABLE profesor IF NOT EXISTS (
-    id_prof INTEGER;
-    id_sala INTEGER FOREIGN KEY REFERENCES sala
-)
+PRAGMA foreign_keys = ON;
+
+CREATE TABLE IF NOT EXISTS pecas (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    value_1 TEXT NOT NULL,
+    value_2 TEXT NOT NULL
+);
+
+INSERT INTO pecas (value_1, value_2) VALUES
+('Base', 'Acido'),
+('Base', 'Base'),
+('Base', 'Oxido'),
+('Base', 'Sal'),
+('Base', 'Sal'),
+('Base', 'Oxido'),
+('Base', 'Base'),
+('Base', 'Acido'),
+('Acido', 'Acido'),
+('Acido', 'Base'),
+('Acido', 'Oxido'),
+('Acido', 'Sal'),
+('Acido', 'Acido'),
+('Acido', 'Base'),
+('Acido', 'Oxido'),
+('Acido', 'Sal'),
+('Sal', 'Acido'),
+('Sal', 'Base'),
+('Sal', 'Sal'),
+('Sal', 'Oxido'),
+('Sal', 'Acido'),
+('Sal', 'Base'),
+('Sal', 'Sal'),
+('Sal', 'Oxido'),
+('Oxido', 'Acido'),
+('Oxido', 'Base'),
+('Oxido', 'Sal'),
+('Oxido', 'Oxido'),
+('Oxido', 'Acido'),
+('Oxido', 'Base'),
+('Oxido', 'Sal'),
+('Oxido', 'Oxido');
+
+CREATE TABLE IF NOT EXISTS sala (
+    id_sala INTEGER PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS aluno (
+    id_aluno INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome_aluno TEXT,
+    pontuacao INTEGER DEFAULT 0
+);

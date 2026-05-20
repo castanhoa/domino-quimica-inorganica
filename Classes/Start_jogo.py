@@ -1,11 +1,15 @@
 import Domino
 import random
 import copy
+import time
 
-quantia_total_pedras = 14
+quantia_total_pedras = 28
 
 def sub_lists(l0:list, l1:list):
     return list( set(l0) - set(l1) )
+
+def conversor_extremidade_to_cima(extremidade:int):
+    return True if extremidade >= 0 else False
 
 def conectar_pedras(pedra_a, pedra_a_valor_0,  pedra_b, pedra_b_valor_0, conectar_acima:bool, tabuleiro:list):
 
@@ -43,6 +47,9 @@ class Jogo:
         self.todas_pedras_originais = Domino.obter_todas_pedras()
         todas_pedras = copy.copy(self.todas_pedras_originais)
 
+        self.tabuleiro = random.sample(todas_pedras, 1)
+        todas_pedras = sub_lists(todas_pedras, self.tabuleiro)
+
         self.monte = random.sample(todas_pedras, quantia_total_pedras // 2) # inicializar o monte
         todas_pedras = sub_lists(todas_pedras, self.monte)
 
@@ -57,7 +64,6 @@ class Jogo:
         self.jogador_IA.inicializar_pedras(jog_ia_pedras)
         todas_pedras = sub_lists(todas_pedras, self.jogador_IA.get_pedras())
 
-        self.tabuleiro = []
 
     class Jogador:
         def __init__(self, jogo, apelido):
@@ -105,11 +111,8 @@ class Jogo:
                 pedra_conexao = jogada_escolhida['pedra_alvo']
                 cima = jogada_escolhida['cima']
                  
-                self.inserir_pedra(indice_minha_pedra=indice_minha_pedra, pedra_conexao=pedra_conexao, cima=cima)
+                self.inserir_pedra(indice_minha_pedra=indice_minha_pedra, pedra_conexao=pedra_conexao, extremidade=(cima))
                 
-                return True
-            elif len(self.monte) > 0 :
-                self.comprar_pedra()
                 return True
             else:
                 return False
@@ -124,9 +127,13 @@ class Jogo:
             else:
                 print(f"JOGADOR {self.__apelido} TENTOU COMPRAR PEDRA, MAS NAO HA MAIS PEDRAS NO MONTE")
 
-        def inserir_pedra(self, indice_minha_pedra, pedra_conexao, cima):
-
+        def inserir_pedra(self, indice_minha_pedra, pedra_conexao, extremidade:int):
+            
             tabuleiro = self.jogo.tabuleiro
+
+            extremidade = 0 if extremidade >= 0 else -1
+
+            cima = extremidade == 0
 
             minha_pedra = self.___pedras[indice_minha_pedra]
 
@@ -166,6 +173,9 @@ class Jogo:
             print("Conseguiu conectar!")
             return self.___pedras.pop(indice_minha_pedra)
 
+
+# === COISAS PARA TESTES ABAIXO === #
+
 meu_jogo = Jogo()
 
 meu_jogador = meu_jogo.jogador_principal
@@ -175,28 +185,35 @@ def exibir_lista_pedras(minhas_pedras):
         print(f"--[ PEDRA {i} ]--")
         print(pedra.valor_0, " /", pedra.valor_1, "\n")
 
-    print(f"\n--[TABULEIRO]--")
-    print(meu_jogo.tabuleiro)
+    print(f"--[TABULEIRO]--")
+    tabuleiro_para_print = []
+
+    for p in meu_jogo.tabuleiro:
+        tabuleiro_para_print.append(str(p))
+
+    print(tabuleiro_para_print)
 
 # LOOP PARA FINS DE TESTE.
 # MUDE PARA True CASO QUEIRA TESTAR.
 while False:
-    print("VEZ DA IA:\n")
-
-    meu_jogo.jogador_IA.jogada_ia()
 
     print("PEDRAS IA: ")
     exibir_lista_pedras(meu_jogo.jogador_IA.get_pedras())
 
-    print("MINHAS PEDRAS: ")
+    print("\n -> MINHAS PEDRAS: ")
     exibir_lista_pedras(meu_jogador.get_pedras())
 
     pedra_conectar_0 = int(input("Digite o indice da sua pedra para conectar: "))
 
-    pedra_conectar_1 = int(input("Digite o indice da pedra do tabuleiro para conectar: "))
-    outra_pedra = meu_jogo.todas_pedras_originais[pedra_conectar_1]
+    pedra_conectar_1 = int(input("Digite a extremidade da pedra do tabuleiro para conectar (0 ou -1): "))
+    outra_pedra = meu_jogo.tabuleiro[pedra_conectar_1]
 
-    meu_jogador.inserir_pedra(pedra_conectar_0, outra_pedra)
+    meu_jogador.inserir_pedra(pedra_conectar_0, outra_pedra, pedra_conectar_1)
 
+    print("VEZ DA IA:\n")
+
+    meu_jogo.jogador_IA.jogada_ia()
+
+    time.sleep(0.6)
 
 
