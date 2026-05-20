@@ -42,4 +42,11 @@ INSERT INTO pecas VALUES
 (DEFAULT, 'Oxido', 'Base'),
 (DEFAULT, 'Oxido', 'Sal'),
 (DEFAULT, 'Oxido', 'Oxido');
-SELECT * FROM pecas;
+CREATE TABLE sala IF NOT EXISTS (
+    id_sala INTEGER PRIMARY KEY,
+)
+CREATE TABLE aluno IF NOT EXISTS (
+    id_aluno INTEGER PRIMARY KEY,
+    nome_aluno VARCHAR(70),
+    pontuacao INTEGER DEFAULT
+)
