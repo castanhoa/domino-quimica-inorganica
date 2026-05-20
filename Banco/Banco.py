@@ -53,17 +53,13 @@ def insert(table: str, data: dict) -> int:
         )
         return cursor.lastrowid
 
-
-def dados_alunos(Dado, sala, filters: dict = None) -> list:
-    query = f"SELECT nome_aluno, tempo_jogado, num_partidas FROM alunos WHERE id_sala = {sala}"
+def Resultados(id_aluno, filters: dict = None) -> list:
+    query = f"SELECT nome_aluno, tempo, partidas FROM alunos WHERE id_aluno = {id_aluno}"
     params = []
 
     if filters:
         for column, value in filters.items():
             query += f" AND {column} = ?"
-
-    query += f" ORDER BY {Dado}"
-
     with get_connection() as conn:
         return conn.execute(query, params).fetchall()
 
@@ -75,14 +71,29 @@ def pegar_valor(table: str, record_id: int) -> list:
         ).fetchone()
 
 
-def update(table: str, record_id: int, data: dict) -> None:
-    set_clause = ", ".join([f"{col} = ?" for col in data.keys()])
-    values = tuple(data.values()) + (record_id,)
+def dados_alunos(Dado, sala, filters: dict = None) -> list:
+    query = f"SELECT nome_aluno, tempo, partidas FROM alunos WHERE id_sala = {sala}"
+    params = []
 
+    if filters:
+        for column, value in filters.items():
+            query += f" AND {column} = ?"
+    with get_connection() as conn:
+        return conn.execute(query, params).fetchall()
+
+
+def pegar_valor(table: str, record_id: int) -> list:
+    with get_connection() as conn:
+        return conn.execute(
+            f"SELECT value_1, value_2 FROM {table} WHERE id = ?", (record_id,)
+        ).fetchone()
+
+
+def update(record_id: int, tempo_partida, data: dict) -> None:
     with get_connection() as conn:
         conn.execute(
-            f"UPDATE {table} SET {set_clause} WHERE id = ?",
-            values,
+            f"UPDATE TABLE aluno SET partida = partida + 1 WHERE id = {record_id}",
+            f"UPDATE TABLE aluno SET tempo = tempo + INTERVAL {tempo_partida} WHERE id = {record_id}"
         )
 
 
