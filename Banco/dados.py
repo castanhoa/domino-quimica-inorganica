@@ -13,8 +13,10 @@ def dados_alunos(p: Professor):
         nome.append(conjunto[i][0])
         partidas.append(conjunto[i][1])
         tempo.append(conjunto[i][2])
-    fig, ax = plt.subplots(figsize=(6, 4))
-    ax.bar(nome, partidas, color = 'blue')
-    ax.bar(nome, tempo, color ='red')
+    ax = plt.subplots(figsize=(6, 4))
+    if dado_determinante == 'número de partidas':
+        ax.bar(nome, partidas, color = 'blue')
+    elif dado_determinante == 'Tempo de jogo':
+        ax.bar(nome, tempo, color ='red')
     plt.tight_layout()
     plt.show()
