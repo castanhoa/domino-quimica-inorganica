@@ -49,6 +49,15 @@ def e_compativel(valor_a:str, valor_b:str):
 
   return funcao_valor_a == funcao_valor_b
 
+def deep_e_compativel(pedra_a:Pedra, pedra_b:Pedra):
+  valores_pedra_a = [pedra_a.valor_0, pedra_a.valor_1]
+  valores_pedra_b = [pedra_b.valor_0, pedra_b.valor_1]
+
+  for val_a in valores_pedra_a:
+    for val_b in valores_pedra_b:
+      if e_compativel(val_a, val_b):
+        return True
+  return False
   
 def obter_descendente_correspondencias(key:str):
   if key in correspondecias.keys():
