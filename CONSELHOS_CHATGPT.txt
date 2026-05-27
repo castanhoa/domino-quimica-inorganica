@@ -1,0 +1,54 @@
+Analisei o repositório em C:\Users\26.00676-7\Downloads\domino-quimica-inorganica-main\domino-quimica-inorganica-main com base no NOTAS.txt (line 14). O projeto ainda está em fase de protótipo: existem boas sementes, como classes de dominó, uma tela de login, uma tela de jogo e um início de banco, mas ainda falta integrar tudo em uma aplicação desktop completa.
+Diagnóstico Geral
+O que já existe:
+Modelo inicial de peças e compatibilidade química em Classes/Domino.py (line 7).
+Classe Jogo com distribuição de peças, monte, jogador e IA em Classes/Start_jogo.py (line 44).
+Telas Pygame para login e jogo em Front-end/TelaLogin.py (line 11) e Front-end/TelaDeJogo.py (line 4).
+Estrutura inicial de usuários, alunos, professores e peças no banco em Banco/Banco.py (line 32).
+O que falta para atender ao NOTAS.txt:
+O fluxo principal ainda não existe: jogo.py (line 4) tem funções com pass.
+Login ainda é fixo em memória, com usuário "Euclides" e senha "1234" em TelaLogin.py (line 52).
+Banco está inconsistente: o ORM usa MySQL e campos dado_0/dado_1, enquanto Setup.sql (line 6) fala em SQLite e usa value_1/value_2.
+Relatórios ainda são rascunho: Banco/dados.py (line 4) depende de imports quebrados e só começa um gráfico de partidas.
+Registro de tempo, acertos e erros ainda não foi implementado; Banco/Resultados.py (line 2) está praticamente vazio.
+Progressão de dificuldade ainda é aleatória/fixa, baseada em chance_aparecer_formulas = 0.5 em Domino.py (line 66), não em vitórias ou níveis.
+As imagens estão com caminhos absolutos de outro computador em TelaDeJogo.py (line 21), o que deve quebrar em qualquer outra máquina.
+Próximas Metas Prioritárias
+Estabilizar a base técnica
+Corrigir imports, caminhos de assets, encoding dos textos e definir oficialmente se o banco será SQLite ou MySQL. Para um projeto desktop escolar, SQLite parece mais simples e coerente com o comentário do Setup.sql.
+
+Criar o fluxo principal da aplicação
+Implementar jogo.py como entrada real: abrir login, identificar se é aluno ou professor, redirecionar aluno para jogo e professor para tela de relatórios.
+
+Finalizar autenticação aluno/professor
+Substituir o usuário fixo por usuários cadastrados no banco. Também é importante não armazenar nomes apenas como hash, porque o professor precisa visualizar alunos nos relatórios.
+
+Integrar tela de jogo com a lógica
+Hoje a tela desenha peças, mas não usa de fato o estado de Jogo. A próxima meta deve ser permitir clicar em uma peça, escolher uma extremidade do tabuleiro, validar a jogada, atualizar mão, monte, turno da IA e condição de vitória.
+
+Registrar desempenho
+Criar uma tabela de partidas com: aluno, data/hora, duração, dificuldade, modo de jogo, acertos, erros, vitória/derrota e compostos envolvidos. Isso atende diretamente aos requisitos de acompanhamento pedagógico.
+
+Implementar dificuldade progressiva
+Sugestão simples:
+Nível 1: Fórmula ↔ classificação.
+Nível 2: Conceito ↔ propriedade.
+Nível 3: Propriedade ↔ fórmula.
+Ao vencer, aumenta dificuldade do aluno.
+Ao perder várias vezes, mantém ou reduz levemente.
+
+Construir relatórios do professor
+Começar com uma tela simples: selecionar turma, selecionar aluno, ver partidas, taxa de acerto, tempo médio, dificuldade atual e compostos com mais erros.
+
+Revisar segurança e LGPD
+O hash atual usa SHA-256 sem salt em AjudaHash.py (line 4). Para o projeto, o ideal é usar bcrypt ou werkzeug.security, guardar somente o necessário e separar permissões de aluno/professor.
+
+Ordem Recomendada De Desenvolvimento
+Primeiro: arrumar estrutura, imports, banco e caminhos de imagem.
+Segundo: fazer login real com banco.
+Terceiro: conectar a tela de jogo à classe Jogo.
+Quarto: registrar partidas com tempo/acertos/erros.
+Quinto: implementar progressão de dificuldade.
+Sexto: criar relatórios do professor.
+Sétimo: polir interface, acessibilidade, identidade visual CPS/ETEC e empacotamento desktop.
+Em resumo: o projeto já tem a ideia central, mas ainda precisa virar um sistema integrado. A meta mais importante agora não é adicionar mais telas, e sim fazer uma versão vertical funcionando do começo ao fim: login de aluno → partida PvE → validação das peças → fim de jogo → salvamento do desempenho → visualização pelo professor.
