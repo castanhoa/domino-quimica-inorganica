@@ -109,13 +109,10 @@ def obter_sessao():
         sessao.close()
 
 
-def adicionar_peca(dado_0: str, dado_1: str) -> Peca:
+def adicionar_peca(self, id) -> Peca:
     with obter_sessao() as sessao:
-        peca = Peca(dado_0=dado_0, dado_1=dado_1)
-        sessao.add(peca)
-        sessao.flush()
-        sessao.refresh(peca)
-        return peca
+        peca = sessao.query(Peca).filter_by(self.id == id).first()
+        return (peca.valor_0, peca.valor1)
 
 
 def listar_pecas() -> list[Peca]:
