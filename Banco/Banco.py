@@ -146,7 +146,6 @@ def pegar_dados_alunos(id_turma: int) -> list[Aluno]:
         return [[
                 aluno.nome,
                 aluno.num_partidas,
-                aluno.num_vitorias,
             ]
             for aluno in alunos
             ]

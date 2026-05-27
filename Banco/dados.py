@@ -14,5 +14,4 @@ def dados_alunos(p: Professor):
         partidas.append(conjunto[i][1])     
     ax = plt.subplots(figsize=(6, 4))
     ax.bar(nome, partidas, color = 'blue')
-    plt.tight_layout()
     plt.show()
