@@ -1,117 +1,153 @@
-import sqlite3
-import logging
+import os
 from contextlib import contextmanager
 
-# NOTAS 20.05.2026:
-# - temos que rever parte deste código que usa fstrings para previnir injeção de SQL
+from sqlalchemy import Boolean, ForeignKey, Integer, String, create_engine, select
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, sessionmaker
 
-# ---------------------------------------------------------------------------
-# Configuração do logger
-# ---------------------------------------------------------------------------
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s"
-)
-logger = logging.getLogger(__name__)
 
-# ---------------------------------------------------------------------------
-# Caminho do banco de dados
-# ---------------------------------------------------------------------------
-DB_PATH = "banco_de_dados.bd"
-SCHEMA_PATH = "Setup.sql"
-
-# ---------------------------------------------------------------------------
-# Conexão
-# ---------------------------------------------------------------------------
-
-def init_db():
+def obter_url_banco() -> str:
     """
-    Inicializa o banco de dados executando o schema SQL.
+    Monta a URL do MySQL a partir das variaveis de ambiente.
+
+    Exemplo:
+    set DB_USER=root
+    set DB_PASSWORD=senha
+    set DB_HOST=localhost
+    set DB_PORT=3306
+    set DB_NAME=domino_quimica
     """
+    usuario = os.getenv("DB_USER", "root")
+    senha = os.getenv("DB_PASSWORD", "tinCTrom")
+    host = os.getenv("DB_HOST", "localhost")
+    porta = os.getenv("DB_PORT", "3306")
+    nome_banco = os.getenv("DB_NAME", "domino_quimica")
 
-    with sqlite3.connect(DB_PATH) as conn:
-
-        # Lê todo o conteúdo do arquivo SQL
-        with open(SCHEMA_PATH, "r", encoding="utf-8") as f:
-            schema = f.read()
-
-        # Executa todos os comandos SQL do arquivo
-        conn.executescript(schema)
-
-        print("Banco de dados inicializado com sucesso.")
+    return f"mysql+pymysql://{usuario}:{senha}@{host}:{porta}/{nome_banco}"
 
 
-# Executa a inicialização
-init_db()
+class Base(DeclarativeBase):
+    pass
+
+
+class Turma(Base):
+    __tablename__ = "turmas"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    nome: Mapped[str] = mapped_column(String(100), nullable=False)
+
+    alunos: Mapped[list["Aluno"]] = relationship(back_populates="turma")
+
+
+class Usuario(Base):
+    __tablename__ = "usuarios"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    nome_hash: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
+    senha_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    logado: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    pontuacao_total: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    tipo: Mapped[str] = mapped_column(String(20), nullable=False)
+
+    __mapper_args__ = {
+        "polymorphic_identity": "usuario",
+        "polymorphic_on": tipo,
+    }
+
+
+class Aluno(Usuario):
+    __tablename__ = "alunos"
+
+    id: Mapped[int] = mapped_column(ForeignKey("usuarios.id"), primary_key=True)
+    id_turma: Mapped[int] = mapped_column(ForeignKey("turmas.id"), nullable=False)
+    partidas_jogadas: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    partidas_vencidas: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    dificuldade: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+
+    turma: Mapped[Turma] = relationship(back_populates="alunos")
+
+    __mapper_args__ = {
+        "polymorphic_identity": "aluno",
+    }
+
+
+class Professor(Usuario):
+    __tablename__ = "professores"
+
+    id: Mapped[int] = mapped_column(ForeignKey("usuarios.id"), primary_key=True)
+
+    __mapper_args__ = {
+        "polymorphic_identity": "professor",
+    }
+
+
+class Peca(Base):
+    __tablename__ = "pecas"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    dado_0: Mapped[str] = mapped_column(String(100), nullable=False)
+    dado_1: Mapped[str] = mapped_column(String(100), nullable=False)
+
+
+engine = create_engine(obter_url_banco(), echo=False, future=True)
+SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
+
+
+def criar_tabelas() -> None:
+    Base.metadata.create_all(bind=engine)
+
 
 @contextmanager
-def get_connection(db_path: str = DB_PATH):
-    """
-    Abre uma conexão com o SQLite e a entrega para o bloco 'with'.
-    Ao sair do bloco:
-      - sem erros  → commit (salva as alterações)
-      - com erro   → rollback (descarta as alterações)
-      - sempre     → fecha a conexão
-    """
-    conn = sqlite3.connect(db_path)
-    conn.row_factory = sqlite3.Row          # permite acessar colunas pelo nome
-    conn.execute("PRAGMA foreign_keys = ON")  # ativa integridade referencial
+def obter_sessao():
+    sessao = SessionLocal()
     try:
-        yield conn          # disponibiliza a conexão para o bloco 'with'
-        conn.commit()
-    except Exception as e:
-        conn.rollback()
-        logger.error("Erro na transação, rollback realizado: %s", e)
+        yield sessao
+        sessao.commit()
+    except Exception:
+        sessao.rollback()
         raise
     finally:
-        conn.close()
-# Funções de acesso a dados
-def insert(table: str, data: dict) -> int:
-    columns = ", ".join(data.keys())
-    placeholders = ", ".join(["?"] * len(data))
-    values = tuple(data.values())
-
-    with get_connection() as conn:
-        cursor = conn.execute(
-            f"INSERT INTO {table} ({columns}) VALUES ({placeholders})",
-            values,
-        )
-        return cursor.lastrowid
+        sessao.close()
 
 
-def dados_alunos(Dado, sala, filters: dict = None) -> list:
-    query = f"SELECT nome_aluno, tempo_jogado, num_partidas FROM alunos WHERE id_sala = {sala}"
-    params = []
-
-    if filters:
-        for column, value in filters.items():
-            query += f" AND {column} = ?"
-            params.append(value)
-
-    query += f" ORDER BY {Dado}"
-
-    with get_connection() as conn:
-        return conn.execute(query, params).fetchall()
+def adicionar_peca(dado_0: str, dado_1: str) -> Peca:
+    with obter_sessao() as sessao:
+        peca = Peca(dado_0=dado_0, dado_1=dado_1)
+        sessao.add(peca)
+        sessao.flush()
+        sessao.refresh(peca)
+        return peca
 
 
-def pegar_valor(table: str, record_id: int) -> list:
-    with get_connection() as conn:
-        return conn.execute(
-            f"SELECT value_1, value_2 FROM {table} WHERE id = ?", (record_id,)
-        ).fetchone()
+def listar_pecas() -> list[Peca]:
+    with obter_sessao() as sessao:
+        return list(sessao.query(Peca).all())
+    
+def pegar_valor(table: str, record_id: int) -> list | None:
+    tabelas_permitidas = {
+        "pecas": Peca,
+    }
 
+    modelo = tabelas_permitidas.get(table)
+    if modelo is None:
+        raise ValueError(f"Tabela nao permitida: {table}")
 
-def update(table: str, record_id: int, data: dict) -> None:
-    set_clause = ", ".join([f"{col} = ?" for col in data.keys()])
-    values = tuple(data.values()) + (record_id,)
+    with obter_sessao() as sessao:
+        resultado = sessao.execute(
+            select(modelo.dado_0, modelo.dado_1).where(modelo.id == record_id)
+        ).one_or_none()
 
-    with get_connection() as conn:
-        conn.execute(
-            f"UPDATE {table} SET {set_clause} WHERE id = ?",
-            values,
-        )
+        if resultado is None:
+            return None
 
-
-def delete(table: str, record_id: int) -> None:
-    with get_connection() as conn:
-        conn.execute(f"DELETE FROM {table} WHERE id = ?", (record_id,))
+        return [resultado.dado_0, resultado.dado_1]
+def pegar_dados_alunos(id_turma: int) -> list[Aluno]:
+    with obter_sessao() as sessao:
+        alunos = sessao.query(Aluno).filter(Aluno.id_turma == id_turma).all()
+        return [[
+                aluno.nome,
+                aluno.num_partidas,
+                aluno.num_vitorias,
+            ]
+            for aluno in alunos
+            ]
+    

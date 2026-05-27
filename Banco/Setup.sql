@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS sala (
 
 CREATE TABLE IF NOT EXISTS aluno (
     id_aluno INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome_aluno TEXT,
-    pontuacao INTEGER DEFAULT 0
+    nome_aluno VARCHAR(75) NOT NULL,
+    num_partidas INTEGER DEFAULT 0,
+    num_vitorias INTEGER DEFAULT 0
 );
