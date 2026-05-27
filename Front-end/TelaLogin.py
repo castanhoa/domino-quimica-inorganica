@@ -1,20 +1,20 @@
-import pygame
-
+from TelaCarregamento import TelaCarregamento
+from TelaInicial import TelaInicial
+from Usuario import Usuario
+from Tela import classeTela
 from pathlib import Path
+import pygame
 import sys
 
 sys.path.append(str(Path('.').parent))
 
-from Tela import classeTela
-from Usuario import Usuario
-
 class TelaLogin(classeTela):
     def __init__(self):
-        super().__init__(800, 600, "")
+        super().__init__()
 
-        self.registrar_rect("input_Login", 300, 225, 200, 50)
-        self.registrar_rect("input_Senha", 300, 300, 200, 50)
-        self.registrar_rect("botao_Entrar", 300, 450, 200, 50)
+        self.registrar_rect("input_Login", self.largura // 2 - 100, self.altura // 2 - 50, 200, 50)
+        self.registrar_rect("input_Senha", self.largura // 2 - 100, self.altura // 2 + 25, 200, 50)
+        self.registrar_rect("botao_Entrar", self.largura // 2 - 100, self.altura // 2 + 150, 200, 50)
 
         self.cor_Ativa = pygame.Color(0, 0, 0)
         self.cor_Inativa = pygame.Color(128, 128, 128)
@@ -46,27 +46,34 @@ class TelaLogin(classeTela):
         self.cursor_visivel = True
         self.cursor_timer = 0
 
+        self.cursor_login_pos = 0
+        self.cursor_senha_pos = 0
+
         self.mensagem = ""
         self.cor_mensagem = (0, 0, 0)
 
-        self.usuario = Usuario("1234", "Euclides", False)
+        self.usuario = Usuario("1234", "Caio", False)
 
         self.logo = pygame.image.load(r"C:\Users\26.01448-0\Desktop\Logotipo.png")
-        self.transparente = pygame.image.load(r"C:\Users\26.01448-0\Desktop\Transparente.png")
 
-        pygame.display.set_icon(self.transparente)
+        pygame.display.set_icon(self.logo)
+        pygame.key.set_repeat(400, 50)
 
 
 
     def fazer_login(self):
         logado = self.usuario.tentar_login(
-            nome=self.texto_login,
-            senha=self.texto_senha
+            nome = self.texto_login,
+            senha = self.texto_senha
         )
 
         if logado:
-            self.mensagem = "Login realizado com sucesso!"
-            self.cor_mensagem = (0, 100, 0)
+            loading = TelaCarregamento(duracao = 0.8)
+            loading.executar()
+            
+            self.proxima_tela = TelaInicial()
+            self.proxima_tela.executar()
+        
         else:
             self.mensagem = "Login ou senha incorretos!"
             self.cor_mensagem = (255, 0, 0)
@@ -79,21 +86,86 @@ class TelaLogin(classeTela):
             self.caixaLogin_Ativa = self.input_Login.collidepoint(evento.pos)
             self.caixaSenha_Ativa = self.input_Senha.collidepoint(evento.pos)
 
-        if evento.type == pygame.KEYDOWN:
-            if evento.key == pygame.K_RETURN:
-                self.fazer_login()
+            if self.caixaLogin_Ativa:
+                mouse_x = evento.pos[0] - (self.input_Login.x + 5)
+                self.cursor_login_pos = len(self.texto_login)
 
+                for i in range(len(self.texto_login)):
+
+                    texto_antes = self.texto_login[:i]
+                    texto_atual = self.texto_login[:i + 1]
+
+                    largura_antes = self.fonte.size(texto_antes)[0]
+                    largura_atual = self.fonte.size(texto_atual)[0]
+
+                    meio_letra = (largura_antes + largura_atual) / 2
+
+                    if mouse_x < meio_letra:
+                        self.cursor_login_pos = i
+                        break
+                else:
+                    self.cursor_login_pos = len(self.texto_login)
+
+            if self.caixaSenha_Ativa:
+                mouse_x = evento.pos[0] - (self.input_Senha.x + 5)
+                self.cursor_senha_pos = len(self.texto_senha)
+                senha_oculta = "*" * len(self.texto_senha)
+                self.cursor_senha_pos = len(self.texto_senha)
+
+                for i in range(len(senha_oculta)):
+
+                    texto_antes = senha_oculta[:i]
+                    texto_atual = senha_oculta[:i + 1]
+                    largura_antes = self.fonte.size(texto_antes)[0]
+                    largura_atual = self.fonte.size(texto_atual)[0]
+                    meio_letra = (largura_antes + largura_atual) / 2
+
+                    if mouse_x < meio_letra:
+                        self.cursor_senha_pos = i
+                        break
+                else:
+                    self.cursor_senha_pos = len(self.texto_senha)
+
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_RETURN or evento.key == pygame.K_KP_ENTER:
+                self.fazer_login()
+            
             if self.caixaLogin_Ativa:
                 if evento.key == pygame.K_BACKSPACE:
-                    self.texto_login = self.texto_login[:-1]
+                    if self.cursor_login_pos > 0:
+                        self.texto_login = (self.texto_login[:self.cursor_login_pos - 1] + self.texto_login[self.cursor_login_pos:])
+                        self.cursor_login_pos -= 1
+
+                elif evento.key == pygame.K_LEFT:
+                    if self.cursor_login_pos > 0:
+                        self.cursor_login_pos -= 1
+
+                elif evento.key == pygame.K_RIGHT:
+                    if self.cursor_login_pos < len(self.texto_login):
+                        self.cursor_login_pos += 1
+
                 else:
-                    self.texto_login += evento.unicode
+                    self.texto_login = (self.texto_login[:self.cursor_login_pos] + evento.unicode + self.texto_login[self.cursor_login_pos:])
+                    self.cursor_login_pos += 1
+
 
             if self.caixaSenha_Ativa:
                 if evento.key == pygame.K_BACKSPACE:
-                    self.texto_senha = self.texto_senha[:-1]
+                    if self.cursor_senha_pos > 0:
+                        self.texto_senha = (self.texto_senha[:self.cursor_senha_pos - 1] + self.texto_senha[self.cursor_senha_pos:])
+                        self.cursor_senha_pos -= 1
+
+                elif evento.key == pygame.K_LEFT:
+                    if self.cursor_senha_pos > 0:
+                        self.cursor_senha_pos -= 1
+
+                elif evento.key == pygame.K_RIGHT:
+                    if self.cursor_senha_pos < len(self.texto_senha):
+                        self.cursor_senha_pos += 1
+
                 else:
-                    self.texto_senha += evento.unicode
+                    self.texto_senha = (self.texto_senha[:self.cursor_senha_pos] + evento.unicode + self.texto_senha[self.cursor_senha_pos:])
+                    self.cursor_senha_pos += 1
 
     def desenhar(self):
         self.tela.fill((255, 255, 255))
@@ -159,7 +231,8 @@ class TelaLogin(classeTela):
                     y = self.input_Login.y + 10
                     pygame.draw.line(self.tela, (0, 0, 0), (x, y), (x, y + 25), 2)
                 else:
-                    x = self.input_Login.x + 5 + textoLogin.get_width()
+                    largura_cursor = self.fonte.size(self.texto_login[:self.cursor_login_pos])[0]
+                    x = self.input_Login.x + 5 + largura_cursor
                     y = self.input_Login.y + 10
                     pygame.draw.line(self.tela, (0, 0, 0), (x, y), (x, y + 25), 2)
 
@@ -169,7 +242,9 @@ class TelaLogin(classeTela):
                     y = self.input_Senha.y + 10
                     pygame.draw.line(self.tela, (0, 0, 0), (x, y), (x, y + 25), 2)
                 else:
-                    x = self.input_Senha.x + 5 + textoSenha.get_width()
+                    senha_visivel = "*" * self.cursor_senha_pos
+                    largura_cursor = self.fonte.size(senha_visivel)[0]
+                    x = self.input_Senha.x + 5 + largura_cursor
                     y = self.input_Senha.y + 10
                     pygame.draw.line(self.tela, (0, 0, 0), (x, y), (x, y + 25), 2)
 
@@ -186,3 +261,5 @@ class TelaLogin(classeTela):
 
 tela = TelaLogin()
 tela.executar()
+
+# Nova cor da Tela: (128,173,182)
