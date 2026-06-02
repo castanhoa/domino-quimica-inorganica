@@ -1,15 +1,19 @@
--- SQLite não possui CREATE SCHEMA nem USE
--- O banco é definido pelo arquivo .db conectado pela aplicação
+CREATE SCHEMA bd_jogo_domino_quimica;
+USE bd_jogo_domino_quimica;
+ 
+SET FOREIGN_KEY_CHECKS = 1 ;
+SET SQL_SAFE_UPDATES = 0 ;
+SELECT @@default_storage_engine ;
 
-PRAGMA foreign_keys = ON;
+DROP TABLE IF EXISTS pecas ;
 
-CREATE TABLE IF NOT EXISTS pecas (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    value_0 TEXT NOT NULL,
-    value_1 TEXT NOT NULL
+CREATE TABLE IF NOT EXISTS pecas( 
+    id SMALLINT AUTO_INCREMENT PRIMARY KEY, 
+    dado_0 VARCHAR(5) NOT NULL, 
+    dado_1 VARCHAR(5) NOT NULL 
 );
 
-INSERT INTO pecas (value_1, value_2) VALUES
+INSERT INTO pecas (dado_0, dado_1) VALUES
 ('Base', 'Acido'),
 ('Base', 'Base'),
 ('Base', 'Oxido'),
@@ -48,9 +52,10 @@ CREATE TABLE IF NOT EXISTS sala (
 );
 
 CREATE TABLE IF NOT EXISTS aluno (
-    id_aluno INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_aluno INTEGER PRIMARY KEY AUTO_INCREMENT,
     nome_aluno VARCHAR(75) NOT NULL,
     num_partidas INTEGER DEFAULT 0,
-    num_vitorias INTEGER DEFAULT 0
+    num_vitorias INTEGER DEFAULT 0,
     tempo_jogo TIME DEFAULT '00:00:00'
 );
+
