@@ -14,13 +14,13 @@ def obter_url_banco() -> str:
     set DB_PASSWORD=senha
     set DB_HOST=localhost
     set DB_PORT=3306
-    set DB_NAME=domino_quimica
+    set DB_NAME=bd_jogo_domino_quimica
     """
     usuario = os.getenv("DB_USER", "root")
     senha = os.getenv("DB_PASSWORD", "tinCTrom")
     host = os.getenv("DB_HOST", "localhost")
     porta = os.getenv("DB_PORT", "3306")
-    nome_banco = os.getenv("DB_NAME", "domino_quimica")
+    nome_banco = os.getenv("DB_NAME", "bd_jogo_domino_quimica")
 
     return f"mysql+pymysql://{usuario}:{senha}@{host}:{porta}/{nome_banco}"
 
@@ -42,8 +42,8 @@ class Usuario(Base):
     __tablename__ = "usuarios"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    nome_hash: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
-    senha_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    nome: Mapped[str] = mapped_column(String(64), nullable=False, unique=True)
+    senha_hash: Mapped[str] = mapped_column(String(256), nullable=False)
     logado: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     pontuacao_total: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     tipo: Mapped[str] = mapped_column(String(20), nullable=False)
