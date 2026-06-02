@@ -5,8 +5,8 @@ PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS pecas (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    value_1 TEXT NOT NULL,
-    value_2 TEXT NOT NULL
+    value_0 TEXT NOT NULL,
+    value_1 TEXT NOT NULL
 );
 
 INSERT INTO pecas (value_1, value_2) VALUES
@@ -52,4 +52,5 @@ CREATE TABLE IF NOT EXISTS aluno (
     nome_aluno VARCHAR(75) NOT NULL,
     num_partidas INTEGER DEFAULT 0,
     num_vitorias INTEGER DEFAULT 0
+    tempo_jogo TIME DEFAULT '00:00:00'
 );

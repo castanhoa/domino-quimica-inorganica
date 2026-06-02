@@ -137,13 +137,20 @@ def pegar_valor(table: str, record_id: int) -> list | None:
             return None
 
         return [resultado.dado_0, resultado.dado_1]
-def pegar_dados_alunos(id_turma: int) -> list[Aluno]:
+def pegar_dados_alunos(dado_determinante: String, id_turma: int) -> list[Aluno]:
     with obter_sessao() as sessao:
-        alunos = sessao.query(Aluno).filter(Aluno.id_turma == id_turma).all()
+        alunos = sessao.query(Aluno).filter(Aluno.id_turma == id_turma).order_by(Aluno.dado_dado_determinante.desc()).all()
         return [[
-                aluno.nome,
-                aluno.num_partidas,
+                aluno.nome_aluno,
+                aluno.dado_dado_determinante,
             ]
             for aluno in alunos
             ]
+    
+def inicializar_pedra(id_pedra):
+    with obter_sessao() as sessao:
+        peca = sessao.query(Peca).filter_by(id=id_pedra).first()
+        if peca is None:
+            raise ValueError(f"Peca com id {id_pedra} nao encontrada")
+        return (peca.value_0, peca.value_1)
     
