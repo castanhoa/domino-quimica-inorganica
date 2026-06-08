@@ -145,7 +145,7 @@ class Jogo:
         def jogada_ia(self):
             tabuleiro = self.jogo.tabuleiro
 
-            chance_erro = min(1, max(0.5, self.jogo.difficuldade))
+            chance_erro = min(1, max(0.5, 1-self.jogo.difficuldade))
 
             pedra_extremidade_0 = tabuleiro[0]
             pedra_extremidade_1 = tabuleiro[-1]
