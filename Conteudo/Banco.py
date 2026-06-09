@@ -149,8 +149,20 @@ def pegar_dados_alunos(dado_determinante: String, id_turma: int) -> list[Aluno]:
     
 def inicializar_pedra(id_pedra):
     with obter_sessao() as sessao:
-        peca = sessao.query(Peca).filter_by(id=id_pedra).first()
+        peca = sessao.query(peca).filter_by(id=id_pedra).first()
         if peca is None:
             raise ValueError(f"Peca com id {id_pedra} nao encontrada")
         return (peca.value_0, peca.value_1)
-    
+def pegar_dados_aluno(id_aluno):
+    with obter_sessao() as sessao:
+        aluno = sessao.query(Aluno).filter(Aluno.id == id_aluno)
+        if aluno is None:
+            raise ValueError(f"aluno não encontrado com id {id_aluno}")
+        return f"{aluno.nome_aluno}, jogos: {aluno.partidas_jogadas}, vitorias {aluno.partidas_vencidas}\n {aluno.acertos/aluno.erros}"
+def pegar_instancia_alunos(id_aluno, lista : List[Alunos]):
+        with obter_sessao() as sessao:
+            aluno = sessao.query(Aluno).filter(Aluno.id == id_aluno)
+            if aluno is None:
+                raise ValueError(f"aluno não encontrado com id {id_aluno}")
+            for obj in lista:
+                if aluno.nome
