@@ -1,11 +1,9 @@
 from Acessibilidade import tamanho_fonte, ajustar_cor
 from Usuario import Usuario
 from Tela import classeTela
-from pathlib import Path
 import pygame
-import sys
+import Imagens.CaminhosImagens as imgs_paths
 
-sys.path.append(str(Path('.').parent))
 
 class TelaLogin(classeTela):
     def __init__(self):
@@ -43,7 +41,7 @@ class TelaLogin(classeTela):
         self.mensagem = ""
         self.cor_mensagem = ajustar_cor(0, 0, 0)
 
-        self.logo = pygame.image.load(r"C:\Users\26.01448-0\Desktop\Logotipo.png")
+        self.logo = pygame.image.load(imgs_paths.LOGOTIPO_PATH)
         self.usuario = Usuario("123", "Aluno", False)
 
         pygame.display.set_icon(self.logo)

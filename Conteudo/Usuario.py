@@ -21,6 +21,3 @@ class Usuario():
         self.__logado = False
         return self.__logado
 
-    # esqueleto abaixo
-    def iniciar_partida():
-        pass

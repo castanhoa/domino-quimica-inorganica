@@ -1,6 +1,8 @@
 from Acessibilidade import tamanho_fonte, ajustar_cor
 from Tela import classeTela
 import pygame
+import Imagens.CaminhosImagens as imgs_paths
+
 
 class TelaInicial(classeTela):
     def __init__(self):
@@ -27,7 +29,7 @@ class TelaInicial(classeTela):
         self.cursor_visivel = True
         self.cursor_timer = 0
 
-        self.logo = pygame.image.load(r"C:\Users\26.01448-0\Desktop\Logotipo.png")
+        self.logo = pygame.image.load(imgs_paths.LOGOTIPO_PATH)
         pygame.display.set_icon(self.logo)
 
     def tratar_eventos(self, evento):

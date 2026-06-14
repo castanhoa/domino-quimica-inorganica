@@ -17,7 +17,7 @@ def obter_url_banco() -> str:
     set DB_NAME=bd_jogo_domino_quimica
     """
     usuario = os.getenv("DB_USER", "root")
-    senha = os.getenv("DB_PASSWORD", "tinCTrom")
+    senha = os.getenv("DB_PASSWORD", "Yoshi574$$")
     host = os.getenv("DB_HOST", "localhost")
     porta = os.getenv("DB_PORT", "3306")
     nome_banco = os.getenv("DB_NAME", "bd_jogo_domino_quimica")
@@ -159,10 +159,10 @@ def pegar_dados_aluno(id_aluno):
         if aluno is None:
             raise ValueError(f"aluno não encontrado com id {id_aluno}")
         return f"{aluno.nome_aluno}, jogos: {aluno.partidas_jogadas}, vitorias {aluno.partidas_vencidas}\n {aluno.acertos/aluno.erros}"
-def pegar_instancia_alunos(id_aluno, lista : List[Alunos]):
-        with obter_sessao() as sessao:
-            aluno = sessao.query(Aluno).filter(Aluno.id == id_aluno)
-            if aluno is None:
-                raise ValueError(f"aluno não encontrado com id {id_aluno}")
-            for obj in lista:
-                if aluno.nome
+# def pegar_instancia_alunos(id_aluno, lista : List[Alunos]):
+#         with obter_sessao() as sessao:
+#             aluno = sessao.query(Aluno).filter(Aluno.id == id_aluno)
+#             if aluno is None:
+#                 raise ValueError(f"aluno não encontrado com id {id_aluno}")
+#             for obj in lista:
+#                 if aluno.nome

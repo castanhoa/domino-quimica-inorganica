@@ -1,13 +1,25 @@
 import pygame
 
 class Peca:
-    def __init__(self, imagem, rect):
+    def __init__(self, imagem, rect, referenciaBackend):
 
         self.imagem = imagem
         self.rect = rect
         self.pos = pygame.Vector2(rect.topleft)
         self.destino = pygame.Vector2(rect.topleft)
-        self.velocidade = 0.15
+        self.velocidade = 0.25
+        self.referenciaBackend = referenciaBackend
+
+    def __eq__(self, value):
+        igual = False
+
+        if not isinstance(value, Peca):
+            return False
+
+        if self.referenciaBackend.ver_igualdade(value.referenciaBackend):
+            igual = True
+
+        return igual
 
     def atualizar(self):
         self.pos += (self.destino - self.pos) * self.velocidade

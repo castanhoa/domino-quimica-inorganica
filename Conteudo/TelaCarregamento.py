@@ -4,7 +4,7 @@ import pygame
 import math
 
 class TelaCarregamento(classeTela):
-    def __init__(self, duracao = 1):
+    def __init__(self, duracao = 0.5):
         super().__init__()
 
         self.duracao = duracao

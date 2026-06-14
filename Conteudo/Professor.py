@@ -4,9 +4,3 @@ class Professor(Usuario):
     def __init__(self, senha:str , nome:str , turmas:int , logado_ao_criar_conta:bool=False):
         super().__init__(senha, nome, logado_ao_criar_conta)
         self.__turmas = turmas
-
-    # esqueleto apenas. nada pronto.
-    def ver_turma(id_turma:int):
-        pass
-    def remover_peca(id_peca):
-        pass

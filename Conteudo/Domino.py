@@ -28,6 +28,13 @@ class Pedra:
 
     self.pedras_conectadas = []
 
+  def ver_igualdade(self, value):
+    if not isinstance(value, Pedra):
+      return False
+
+    return self.valor_0 == value.valor_0 and self.valor_1 == value.valor_1 and self.valor_0_conexao == value.valor_0_conexao and self.valor_1_conexao == value.valor_1_conexao and self.pedras_conectadas == value.pedras_conectadas
+
+
   def __str__(self):
     return f"({self.valor_0} / {self.valor_1})"
 

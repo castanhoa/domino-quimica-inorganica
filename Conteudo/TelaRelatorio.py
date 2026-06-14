@@ -3,6 +3,8 @@ from Tela import classeTela
 import pygame
 import matplotlib.pyplot as plt
 import numpy as np
+import Imagens.CaminhosImagens as imgs_paths
+
 
 class TelaRelatorio(classeTela):
     def __init__(self):
@@ -16,7 +18,7 @@ class TelaRelatorio(classeTela):
         self.velocidade_animacao = 0.1
         
         self.fonte = pygame.font.SysFont("roboto", tamanho_fonte(20))
-        self.logo = pygame.image.load(r"C:\Users\26-01448-0\Desktop\Logotipo.png")
+        self.logo = pygame.image.load(imgs_paths.LOGOTIPO_PATH)
 
         pygame.display.set_icon(self.logo)
     
