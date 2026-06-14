@@ -1,3 +1,4 @@
+import Acessibilidade
 import pygame
 import os
 
@@ -23,9 +24,7 @@ class classeTela:
         self.elementos_responsivos = []
 
     def registrar_rect(self, nome, x, y, largura, altura):
-
         self.elementos_responsivos.append({"nome": nome, "x": x, "y": y, "largura": largura, "altura": altura})
-
         setattr(self, nome, pygame.Rect(x, y, largura, altura))
 
     def atualizar_layout(self):
@@ -65,6 +64,28 @@ class classeTela:
                     )
                     self.atualizar_layout()
 
+                elif evento.type == pygame.KEYDOWN:
+
+                    if evento.key == pygame.K_F1:
+                        Acessibilidade.diminuir_fonte()
+                        self.recriar_fontes()
+
+                    elif evento.key == pygame.K_F2:
+                        Acessibilidade.aumentar_fonte()
+                        self.recriar_fontes()
+
+                    elif evento.key == pygame.K_F3:
+                        Acessibilidade.definir_modo_daltonismo(Acessibilidade.MODO_NORMAL)
+
+                    elif evento.key == pygame.K_F4:
+                            Acessibilidade.definir_modo_daltonismo(Acessibilidade.MODO_DEUTERANOPIA)
+
+                    elif evento.key == pygame.K_F5:
+                        Acessibilidade.definir_modo_daltonismo(Acessibilidade.MODO_PROTANOPIA)
+
+                    elif evento.key == pygame.K_F6:
+                        Acessibilidade.definir_modo_daltonismo(Acessibilidade.MODO_TRITANOPIA)
+
                 self.tratar_eventos(evento)
 
             if not self.rodando:
@@ -75,25 +96,11 @@ class classeTela:
             if self.tela:
                 pygame.display.flip()
 
-        pygame.quit()
-
-    def transicao(self):
-
-        fade = pygame.Surface(self.tela.get_size())
-        fade.fill((0, 0, 0))
-
-        for alpha in range(0, 255, 10):
-
-            fade.set_alpha(alpha)
-
-            self.desenhar()
-            self.tela.blit(fade, (0, 0))
-
-            pygame.display.flip()
-            pygame.time.delay(20)
-
     def tratar_eventos(self, evento):
         pass
 
     def desenhar(self):
+        pass
+
+    def recriar_fontes(self):
         pass
