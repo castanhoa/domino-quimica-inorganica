@@ -1,10 +1,10 @@
 import pygame
 
 class Mao:
-    def __init__(self, pos_base):
+    def __init__(self, pos_base, espaco):
         self.pos_base = pygame.Vector2(pos_base)
         self.pecas = []
-        self.espaco = 80
+        self.espaco = espaco
 
     def adicionar(self, peca):
         self.pecas.append(peca)
