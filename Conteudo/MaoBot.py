@@ -2,9 +2,10 @@ import pygame
 
 class MaoBot:
 
-    def __init__(self, pos_base):
+    def __init__(self, pos_base, espaco):
         self.pos_base = pygame.Vector2(pos_base)
         self.pecas = []
+        self.espaco = espaco
 
     def adicionar(self, peca):
         self.pecas.append(peca)
@@ -19,4 +20,4 @@ class MaoBot:
 
         for peca in self.pecas:
             peca.set_posicao((x, y))
-            x += 60
+            x += self.espaco
