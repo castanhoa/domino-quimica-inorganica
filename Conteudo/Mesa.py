@@ -1,12 +1,12 @@
 import pygame
 
 class Mesa:
-    def __init__(self, centro):
+    def __init__(self, centro, espaco):
 
         self.centro = pygame.Vector2(centro)
         self.pecas = []
 
-        self.espaco = 85
+        self.espaco = espaco
         self.direcao = pygame.Vector2(1, 0)
 
     def adicionar_peca(self, peca):
