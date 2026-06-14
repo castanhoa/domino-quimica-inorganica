@@ -1,3 +1,4 @@
+from Acessibilidade import tamanho_fonte, ajustar_cor
 from Tela import classeTela
 from MaoBot import MaoBot
 from Mesa import Mesa
@@ -10,100 +11,102 @@ class TelaDeJogo(classeTela):
     def __init__(self):
         super().__init__()  # SEM MEXER NO VISUAL
 
+        self.escala = self.altura / 1080
         self.botao_peca = []
-        self.mao_bot = MaoBot((self.largura // 2 - 275, int(self.altura * 0.18)))
-        self.registrar_rect("botao_monte", 1600, 600, 150, 250)
+        self.mao_bot = MaoBot((self.largura // 2 - int(200 * self.escala), int(self.altura * 0.18)),
+        int(60 * self.escala))
+        
+        self.registrar_rect("botao_Monte", self.largura - 200, (self.altura - 250) // 2, 150, 250)
+        self.registrar_rect("botao_Voltar", int(self.largura * 0.01),
+                            int(self.altura * 0.86), int(200 * self.escala), int(50 * self.escala))
+        
+        self.tamanho_peca_player = (int(70 * self.escala), int(140 * self.escala))
+        self.tamanho_peca_bot = (int(50 * self.escala), int(100 * self.escala))
+        self.tamanho_monte = (int(150 * self.escala), int(250 * self.escala))
 
-        x = self.largura // 2 - 275
-        y = self.altura // 2 + 150
+        self.cor_botao_atual_voltar = [255, 255, 255]
+        self.velocidade_animacao = 0.1
+
+        self.pecaPlayer = pygame.transform.scale(pygame.image.load(r"C:\Users\26.01448-0\Desktop\PecaPlayer.png"),
+        self.tamanho_peca_player)
+        self.pecaBot = pygame.transform.scale(pygame.image.load(r"C:\Users\26.01448-0\Desktop\PecaBot.png"),
+        self.tamanho_peca_bot)
+        self.MontePecas = pygame.transform.scale(pygame.image.load(r"C:\Users\26.01448-0\Desktop\MontePeca.png"),
+        self.tamanho_monte)
+        self.fonte = pygame.font.SysFont("roboto", tamanho_fonte(20))
+        self.logo = pygame.image.load(r"C:\Users\26.01448-0\Desktop\Logotipo.png")
+
+        self.mesa = Mesa((self.largura // 2, self.altura // 2), int(85 * self.escala))
+        self.mao = Mao((self.largura // 2 - int(275 * self.escala),
+                    self.altura // 2 + int(220 * self.escala)), int(80 * self.escala))
+        
+        pygame.display.set_icon(self.logo)
+        
+        x = self.largura // 2 - int(275 * self.escala)
+        y = self.altura // 2 + int(220 * self.escala)
 
         for i in range(7):
             nome = f"botao_peca_{i}"
             self.registrar_rect(nome, x, y, 70, 140)
-            x += 80
+            x += int(80 * self.escala)
 
-        self.tamanho_peca_player = (70, 140)
-        self.tamanho_peca_bot = (50, 100)
-        self.tamanho_monte = (150, 250)
-
-        # IMAGENS (NÃO ALTERADO)
-        self.logo = pygame.image.load(r"C:\Users\26.01448-0\Desktop\Logotipo.png")
-        self.pecaPlayer = pygame.transform.scale(
-            pygame.image.load(r"C:\Users\26.01448-0\Desktop\PecaPlayer.png"),
-            self.tamanho_peca_player
-        )
-        self.pecaBot = pygame.transform.scale(
-            pygame.image.load(r"C:\Users\26.01448-0\Desktop\PecaBot.png"),
-            self.tamanho_peca_bot
-        )
-        self.MontePecas = pygame.transform.scale(
-            pygame.image.load(r"C:\Users\26.01448-0\Desktop\MontePeca.png"),
-            self.tamanho_monte
-        )
-
-        pygame.display.set_icon(self.logo)
-
-        # NOVO SISTEMA (COMPATÍVEL)
-        self.mesa = Mesa((self.largura // 2, self.altura // 2))
-        self.mao = Mao((self.largura // 2 - 275, self.altura // 2 + 150))
-
-        # CRIA PEÇAS USANDO SEU RECT EXISTENTE
         for i in range(7):
-
             rect = getattr(self, f"botao_peca_{i}")
-
             rect.width = self.tamanho_peca_player[0]
             rect.height = self.tamanho_peca_player[1]
-
             peca = Peca(self.pecaPlayer, rect)
-
             self.mao.adicionar(peca)
 
-        x = self.largura // 2 - 275
-        y = int(self.altura * 0.18)
-
         for i in range(7):
-
             rect = pygame.Rect(x, y, 50, 100)
-
             peca = Peca(self.pecaBot, rect)
-
             self.mao_bot.adicionar(peca)
-
-            x += 60
+            x += int(60 * self.escala)
 
     def tratar_eventos(self, evento):
 
         if evento.type == pygame.MOUSEBUTTONDOWN:
-
-            if self.botao_monte.collidepoint(evento.pos):
-
+            if self.botao_Monte.collidepoint(evento.pos):
                 rect = pygame.Rect(1000, 300, 70, 140)
-
                 nova = Peca(self.pecaPlayer, rect)
-
                 self.mao.adicionar(nova)
+            
+            if self.botao_Voltar.collidepoint(evento.pos):
+                self.proxima_tela = "inicio"
+                self.rodando = False
 
             for peca in self.mao.pecas:
-
                 if peca.get_rect().collidepoint(evento.pos):
-
                     self.mao.remover(peca)
                     self.mesa.adicionar_peca(peca)
 
+    def recriar_fontes(self):
+        self.fonte = pygame.font.SysFont("roboto", tamanho_fonte(20))
+
     def desenhar(self):
-
-        self.tela.fill((255, 255, 255))
+        self.tela.fill(ajustar_cor(255, 255, 255))
         self.mao_bot.organizar()
+        mouse_pos = pygame.mouse.get_pos()
 
-        pygame.draw.rect(
-            self.tela,
-            (255, 0, 0),
-            (0, 0, self.largura, int(self.altura * 0.15))
-        )
+        if self.botao_Voltar.collidepoint(mouse_pos):
+            cor_alvo_voltar = ajustar_cor(200, 200, 200)
+        else:
+            cor_alvo_voltar = ajustar_cor(255, 255, 255)
 
-        self.tela.blit(self.MontePecas, self.botao_monte.topleft)
-        self.tela.blit(self.logo, (50, 175))
+        for i in range(3):
+            self.cor_botao_atual_voltar[i] += (cor_alvo_voltar[i] - self.cor_botao_atual_voltar[i]) * self.velocidade_animacao
+        
+        cor_botao_voltar = tuple(int(c) for c in self.cor_botao_atual_voltar)
+
+        pygame.draw.rect(self.tela, cor_botao_voltar, self.botao_Voltar, border_radius=8)
+        pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Voltar, 2, border_radius=8)
+
+        texto_botao_voltar = self.fonte.render("Voltar", True, ajustar_cor(0, 0, 0))
+        self.tela.blit(texto_botao_voltar, texto_botao_voltar.get_rect(center=self.botao_Voltar.center))
+
+        pygame.draw.rect(self.tela, ajustar_cor(255, 0, 0), (0, 0, self.largura, int(self.altura * 0.15)))
+        self.tela.blit(self.MontePecas, self.botao_Monte.topleft)
+        self.tela.blit(self.logo, (int(self.largura * 0.03), int(self.altura * 0.16)))
 
         # PEÇAS DA MÃO (COM ANIMAÇÃO)
         for peca in self.mao.pecas:
