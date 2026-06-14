@@ -1,10 +1,11 @@
-from TelaCarregamento import TelaCarregamento
-from TelaInicial import TelaInicial
+from Acessibilidade import tamanho_fonte, ajustar_cor
 from Usuario import Usuario
 from Tela import classeTela
 from pathlib import Path
 import pygame
 import sys
+
+sys.path.append(str(Path('.').parent))
 
 class TelaLogin(classeTela):
     def __init__(self):
@@ -14,23 +15,15 @@ class TelaLogin(classeTela):
         self.registrar_rect("input_Senha", self.largura // 2 - 100, self.altura // 2 + 25, 200, 50)
         self.registrar_rect("botao_Entrar", self.largura // 2 - 100, self.altura // 2 + 150, 200, 50)
 
-        self.cor_Ativa = pygame.Color(0, 0, 0)
-        self.cor_Inativa = pygame.Color(128, 128, 128)
-        self.cor_placeholder = (150, 150, 150)
-
-        self.cor_botao_normal = (255, 255, 255)
-        self.cor_botao_hover = (200, 200, 200)
-
         self.cor_botao_atual = [255, 255, 255]
         self.velocidade_animacao = 0.1
 
-        self.fonte = pygame.font.SysFont("arial", 20)
-        self.legenda_Fonte = pygame.font.SysFont("arial", 16)
-        self.titulo_Fonte = pygame.font.SysFont("arial", 30)
+        self.fonte = pygame.font.SysFont("roboto", tamanho_fonte(20))
+        self.legenda_Fonte = pygame.font.SysFont("roboto", tamanho_fonte(16))
+        self.titulo_Fonte = pygame.font.SysFont("roboto", tamanho_fonte(32))
 
-        self.legenda_ETEC = self.titulo_Fonte.render("ETEC Júlio de Mesquita", True, (0, 0, 0))
-        self.legenda_Login = self.legenda_Fonte.render("Login", True, (0, 0, 0))
-        self.legenda_Senha = self.legenda_Fonte.render("Senha", True, (0, 0, 0))
+        self.legenda_Login = self.legenda_Fonte.render("Login", True, ajustar_cor(0, 0, 0))
+        self.legenda_Senha = self.legenda_Fonte.render("Senha", True, ajustar_cor(0, 0, 0))
 
         self.placeholder_login = "Digite seu login"
         self.placeholder_senha = "Digite sua senha"
@@ -48,11 +41,10 @@ class TelaLogin(classeTela):
         self.cursor_senha_pos = 0
 
         self.mensagem = ""
-        self.cor_mensagem = (0, 0, 0)
-
-        self.usuario = Usuario("1234", "Caio", False)
+        self.cor_mensagem = ajustar_cor(0, 0, 0)
 
         self.logo = pygame.image.load(r"C:\Users\26.01448-0\Desktop\Logotipo.png")
+        self.usuario = Usuario("123", "Aluno", False)
 
         pygame.display.set_icon(self.logo)
         pygame.key.set_repeat(400, 50)
@@ -66,15 +58,12 @@ class TelaLogin(classeTela):
         )
 
         if logado:
-            loading = TelaCarregamento(duracao = 0.8)
-            loading.executar()
-            
-            self.proxima_tela = TelaInicial()
-            self.proxima_tela.executar()
+            self.proxima_tela = "inicio"
+            self.rodando = False
         
         else:
-            self.mensagem = "Login ou senha incorretos!"
-            self.cor_mensagem = (255, 0, 0)
+            self.mensagem = "Login e/ou senha incorretos!"
+            self.cor_mensagem = ajustar_cor(255, 0, 0)
 
     def tratar_eventos(self, evento):
         if evento.type == pygame.MOUSEBUTTONDOWN:
@@ -166,16 +155,13 @@ class TelaLogin(classeTela):
                     self.cursor_senha_pos += 1
 
     def desenhar(self):
-        self.tela.fill((255, 255, 255))
+        self.tela.fill(ajustar_cor(255, 255, 255))
         mouse_pos = pygame.mouse.get_pos()
 
-        largura = self.tela.get_width()
-        altura = self.tela.get_height()
-
-        tamanho_faixa = int(altura * 0.15)
-        y_faixa = int(altura * 0)
+        tamanho_faixa = int(self.altura * 0.15)
+        y_faixa = int(self.altura * 0)
         
-        pygame.draw.rect(self.tela,(255, 0, 0),(0, y_faixa, largura, tamanho_faixa))
+        pygame.draw.rect(self.tela, ajustar_cor(255, 0, 0), (0, y_faixa, self.largura, tamanho_faixa))
         self.tela.blit(self.logo, (50, 175))
 
         self.cursor_timer += 1
@@ -183,41 +169,48 @@ class TelaLogin(classeTela):
             self.cursor_visivel = not self.cursor_visivel
             self.cursor_timer = 0
 
-        cor_login = self.cor_Ativa if self.caixaLogin_Ativa else self.cor_Inativa
-        cor_senha = self.cor_Ativa if self.caixaSenha_Ativa else self.cor_Inativa
+        cor_login = ajustar_cor(0, 0, 0) if self.caixaLogin_Ativa else ajustar_cor(128, 128, 128)
+        cor_senha = ajustar_cor(0, 0, 0) if self.caixaSenha_Ativa else ajustar_cor(128, 128, 128)
 
         if self.botao_Entrar.collidepoint(mouse_pos):
-            cor_alvo = self.cor_botao_hover
+            cor_alvo = ajustar_cor(200, 200, 200)
         else:
-            cor_alvo = self.cor_botao_normal
+            cor_alvo = ajustar_cor(255, 255, 255)
 
         for i in range(3):
             self.cor_botao_atual[i] += (cor_alvo[i] - self.cor_botao_atual[i]) * self.velocidade_animacao
 
         cor_botao = tuple(int(c) for c in self.cor_botao_atual)
-
-        titulo_rect = self.legenda_ETEC.get_rect(center=(self.tela.get_width() // 2, int(self.tela.get_height() * 0.26)))
         
-        self.tela.blit(self.legenda_ETEC, titulo_rect)
+        texto_ETEC = self.titulo_Fonte.render(
+            "ETEC Júlio de Mesquita", True, ajustar_cor(0, 0, 0)
+        )
+
+        titulo_rect = texto_ETEC.get_rect(
+            center=(self.largura // 2,
+                    int(self.altura * 0.30))
+        )
+
+        self.tela.blit(texto_ETEC, titulo_rect)
         self.tela.blit(self.legenda_Login, (self.input_Login.x, self.input_Login.y - 20))
         self.tela.blit(self.legenda_Senha, (self.input_Senha.x, self.input_Senha.y - 20))
 
-        pygame.draw.rect(self.tela, (255, 255, 255), self.input_Login, border_radius=8)
+        pygame.draw.rect(self.tela, ajustar_cor(255, 255, 255), self.input_Login, border_radius=8)
         pygame.draw.rect(self.tela, cor_login, self.input_Login, 2, border_radius=8)
 
-        pygame.draw.rect(self.tela, (255, 255, 255), self.input_Senha, border_radius=8)
+        pygame.draw.rect(self.tela, ajustar_cor(255, 255, 255), self.input_Senha, border_radius=8)
         pygame.draw.rect(self.tela, cor_senha, self.input_Senha, 2, border_radius=8)
 
         if self.texto_login == "":
-            textoLogin = self.fonte.render(self.placeholder_login, True, self.cor_placeholder)
+            textoLogin = self.fonte.render(self.placeholder_login, True, ajustar_cor(150, 150, 150))
         else:
-            textoLogin = self.fonte.render(self.texto_login, True, (0, 0, 0))
+            textoLogin = self.fonte.render(self.texto_login, True, ajustar_cor(0, 0, 0))
 
         if self.texto_senha == "":
-            textoSenha = self.fonte.render(self.placeholder_senha, True, self.cor_placeholder)
+            textoSenha = self.fonte.render(self.placeholder_senha, True, ajustar_cor(150, 150, 150))
         else:
             senha_oculta = "*" * len(self.texto_senha)
-            textoSenha = self.fonte.render(senha_oculta, True, (0, 0, 0))
+            textoSenha = self.fonte.render(senha_oculta, True, ajustar_cor(0, 0, 0))
 
         self.tela.blit(textoLogin, (self.input_Login.x + 5, self.input_Login.y + 10))
         self.tela.blit(textoSenha, (self.input_Senha.x + 5, self.input_Senha.y + 10))
@@ -227,37 +220,37 @@ class TelaLogin(classeTela):
                 if self.texto_login == "":
                     x = self.input_Login.x + 5
                     y = self.input_Login.y + 10
-                    pygame.draw.line(self.tela, (0, 0, 0), (x, y), (x, y + 25), 2)
+                    pygame.draw.line(self.tela, ajustar_cor(0, 0, 0), (x, y), (x, y + 25), 2)
                 else:
                     largura_cursor = self.fonte.size(self.texto_login[:self.cursor_login_pos])[0]
                     x = self.input_Login.x + 5 + largura_cursor
                     y = self.input_Login.y + 10
-                    pygame.draw.line(self.tela, (0, 0, 0), (x, y), (x, y + 25), 2)
+                    pygame.draw.line(self.tela, ajustar_cor(0, 0, 0), (x, y), (x, y + 25), 2)
 
             if self.caixaSenha_Ativa:
                 if self.texto_senha == "":
                     x = self.input_Senha.x + 5
                     y = self.input_Senha.y + 10
-                    pygame.draw.line(self.tela, (0, 0, 0), (x, y), (x, y + 25), 2)
+                    pygame.draw.line(self.tela, ajustar_cor(0, 0, 0), (x, y), (x, y + 25), 2)
                 else:
                     senha_visivel = "*" * self.cursor_senha_pos
                     largura_cursor = self.fonte.size(senha_visivel)[0]
                     x = self.input_Senha.x + 5 + largura_cursor
                     y = self.input_Senha.y + 10
-                    pygame.draw.line(self.tela, (0, 0, 0), (x, y), (x, y + 25), 2)
+                    pygame.draw.line(self.tela, ajustar_cor(0, 0, 0), (x, y), (x, y + 25), 2)
 
         pygame.draw.rect(self.tela, cor_botao, self.botao_Entrar, border_radius=8)
-        pygame.draw.rect(self.tela, (128, 128, 128), self.botao_Entrar, 2, border_radius=8)
+        pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Entrar, 2, border_radius=8)
 
-        texto_botao = self.fonte.render("Entrar", True, (0, 0, 0))
+        texto_botao = self.fonte.render("Entrar", True, ajustar_cor(0, 0, 0))
         self.tela.blit(texto_botao, texto_botao.get_rect(center=self.botao_Entrar.center))
 
         if self.mensagem != "":
-            texto_msg = self.fonte.render(self.mensagem, True, self.cor_mensagem)
-            msg_rect = texto_msg.get_rect(center=(self.tela.get_width() // 2, int(self.tela.get_height() * 0.87)))
-            self.tela.blit(texto_msg, msg_rect)
-
-tela = TelaLogin()
-tela.executar()
-
-# Nova cor da Tela: (128,173,182)
+            texto_mensagem = self.fonte.render(self.mensagem, True, self.cor_mensagem)
+            mensagem_rect = texto_mensagem.get_rect(center=(self.tela.get_width() // 2, int(self.tela.get_height() * 0.87)))
+            self.tela.blit(texto_mensagem, mensagem_rect)
+    
+    def recriar_fontes(self):
+        self.fonte = pygame.font.SysFont("roboto", tamanho_fonte(20))
+        self.legenda_Fonte = pygame.font.SysFont("roboto", tamanho_fonte(16))
+        self.titulo_Fonte = pygame.font.SysFont("roboto", tamanho_fonte(32))
