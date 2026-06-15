@@ -17,7 +17,7 @@ def obter_url_banco() -> str:
     set DB_NAME=bd_jogo_domino_quimica
     """
     usuario = os.getenv("DB_USER", "root")
-    senha = os.getenv("DB_PASSWORD", "Yoshi574$$")
+    senha = os.getenv("DB_PASSWORD", "tinCTrom")
     host = os.getenv("DB_HOST", "localhost")
     porta = os.getenv("DB_PORT", "3306")
     nome_banco = os.getenv("DB_NAME", "bd_jogo_domino_quimica")
