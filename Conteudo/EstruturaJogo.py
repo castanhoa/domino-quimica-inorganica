@@ -179,7 +179,7 @@ class Jogo:
                                        }                    
                     possiveis_jogadas.append(possivel_jogada)
 
-            num_jogadas_erradas = int((len(possiveis_jogadas) - 1)*chance_erro / (1 - chance_erro))
+            num_jogadas_erradas = int((len(possiveis_jogadas))*chance_erro / (1 - chance_erro))
 
             for _ in range(num_jogadas_erradas):
                 possivel_jogada = {
@@ -200,6 +200,10 @@ class Jogo:
 
                 if sucesso != False and len(self.__pedras) > 0:
                     print("IA Conseguiu conectar!")
+
+                    if len(self.__pedras) >= indice_minha_pedra:
+                        return False
+
                     self.__pedras.pop(indice_minha_pedra)
 
                     return True
@@ -241,7 +245,7 @@ class Jogo:
             tentativa_conexao = {
                 'minha_pedra': minha_pedra, 
                 'pedra_alvo': pedra_conexao,
-                'indice': len(self.jogo.tabuleiro)
+                'indice': (len(self.jogo.tabuleiro) - 1)
             }
 
             self.__tentativas_conexao.append(tentativa_conexao)
