@@ -91,6 +91,7 @@ class Jogo:
     def resultado(self):
 
         jogo_trancado = True
+        jogo_finalizado = False
 
         if len(self.monte) == 0:
             # ver se a ia esta trancada
@@ -111,13 +112,19 @@ class Jogo:
         
         if jogo_trancado == True:
             aluno_venceu = len(self.jogador_principal.get_pedras()) >= len(self.jogador_IA.get_pedras())
+            jogo_finalizado = True
                 # usuario venceu
 
         if len(self.jogador_IA.get_pedras()) == 0:
+            jogo_finalizado = True
             aluno_venceu = False
 
         if len(self.jogador_principal.get_pedras()) == 0:
+            jogo_finalizado = True
             aluno_venceu = True
+
+        if jogo_finalizado != True:
+            return False
 
         tentativas_conexao, tentativas_conexao_erradas = self.jogador_principal.get_tentativas_conexao()
 
@@ -126,6 +133,8 @@ class Jogo:
 
         # atualizar dados do aluno
         self.objAluno.resultado(aluno_venceu, len_tentativas_conexao, len_tentativas_conexao_certas)
+
+        return True
 
     class Jogador:
         def __init__(self, jogo:Jogo, apelido):
@@ -170,11 +179,11 @@ class Jogo:
                                        }                    
                     possiveis_jogadas.append(possivel_jogada)
 
-            num_jogadas_erradas = len(possiveis_jogadas)*chance_erro / (1 - chance_erro)
+            num_jogadas_erradas = int((len(possiveis_jogadas) - 1)*chance_erro / (1 - chance_erro))
 
             for _ in range(num_jogadas_erradas):
                 possivel_jogada = {
-                        'indice_minha_pedra': random.randint(0, len(self.__pedras)), 
+                        'indice_minha_pedra': random.randint(0, len(self.__pedras) - 1), 
                         'pedra_alvo': self.jogo.tabuleiro[random.randint(-1,0)],
                         'cima': True if random.randint(0,1) == 1 else False,
                         }
@@ -187,9 +196,16 @@ class Jogo:
                 pedra_conexao = jogada_escolhida['pedra_alvo']
                 cima = jogada_escolhida['cima']
                  
-                self.inserir_pedra(indice_minha_pedra=indice_minha_pedra, pedra_conexao=pedra_conexao, extremidade=(cima))
+                sucesso = self.inserir_pedra(indice_minha_pedra=indice_minha_pedra, pedra_conexao=pedra_conexao, extremidade=(cima))
+
+                if sucesso != False and len(self.__pedras) > 0:
+                    print("IA Conseguiu conectar!")
+                    self.__pedras.pop(indice_minha_pedra)
+
+                    return True
+                else:
+                    return False
                 
-                return True
             else:
                 
                 self.comprar_pedra()
@@ -264,7 +280,7 @@ class Jogo:
                 print("Não conseguiu conectar.")
                 return False
             
-            print("Conseguiu conectar!")
+            print("PLAYER Conseguiu conectar!")
             return self.__pedras.pop(indice_minha_pedra)
 
         def get_tentativas_conexao(self):

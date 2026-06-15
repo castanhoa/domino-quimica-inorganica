@@ -1,18 +1,38 @@
 from EstruturaJogo import Jogo
 from TelaDeJogo import TelaDeJogo
 from Peca import Peca
+import random
+import concurrent.futures
+
 # import Imagens.CaminhosImagens as imgs_paths
 
-import time
+from time import sleep as wait
 from Aluno import Aluno
 
 meu_aluno = Aluno("123", "Robert", 1, True)
+
+# vez do jogador é quando:
+# (self.rodada + self.rodada_offset) % 2 == 0
 
 class Jogatina:
     def __init__(self, objAluno):
         self.jogo = Jogo(objAluno=objAluno)
     
         self.tela = TelaDeJogo(objJogatina=self)
+
+        self.rodada = 0
+        self.rodada_antiga = -1
+
+        self.rodada_offset = random.randint(0,1)
+        self.jogo_finalizado = False
+
+    def get_vez(self):
+        return (self.rodada + self.rodada_offset) % 2
+
+        # if vez == 0:
+        #     return vez, self.jogo.jogador_principal, self.tela.mao
+        # else:
+        #     return vez, self.jogo.jogador_IA, self.tela.mao_bot
 
     def converter_pedra_back_para_front(self, objPedra, posicao, is_player:bool):
         id_pedra = str(hash(objPedra))
@@ -78,12 +98,19 @@ class Jogatina:
         return (minha_peca_index, outra_peca.referenciaBackend, extremidade)
     
     def fazer_jogada_usuario(self, peca_front_conectar):
+
+        if self.get_vez() != 0:
+            print("Não é a vez do usuário, e sim do bot.")
+            return
+
         minha_mao = self.tela.mao
 
         jogadas = [
             self.get_jogada(minha_mao, peca_front_conectar, 0),
             self.get_jogada(minha_mao, peca_front_conectar, -1)
         ]
+        
+        self.rodada += 1
 
         for pot_jogada in jogadas:
             jogada = self.jogo.jogador_principal.inserir_pedra(*pot_jogada)
@@ -93,10 +120,34 @@ class Jogatina:
         
         self.atualizar_pedras_ui()
 
+        self.rodada_antiga = self.rodada
+
+
+    def iniciar_partida(self):
+
+        if self.jogo_finalizado:
+            print("JOGO FINALIZADO")
+            return True
+
+        self.atualizar_pedras_ui()
+        self.jogo_finalizado = self.jogo.resultado()
+        if self.jogo_finalizado:
+            print("JOGO FINALIZADO")
+            return True
+        
+        #if self.get_vez() != self.rodada_antiga:
+
+        print(f"VEZ: {self.get_vez()}")
+            
+        if self.get_vez() == 1:
+            self.jogo.jogador_IA.jogada_ia()
+
+            self.rodada_antiga = self.rodada
+            self.rodada += 1
+
 
 minha_jogatina = Jogatina(meu_aluno)
-minha_jogatina.atualizar_pedras_ui()
-minha_jogatina.tela.executar()
+minha_jogatina.tela.executar(minha_jogatina.iniciar_partida)
 
         # for i in range(7):
         #     nome = f"botao_peca_{i}"
