@@ -1,12 +1,12 @@
-from Acessibilidade import tamanho_fonte, ajustar_cor
-from Tela import classeTela
+from Conteudo.Acessibilidade import tamanho_fonte, ajustar_cor
+from Conteudo.Tela import classeTela
 import pygame
-import Imagens.CaminhosImagens as imgs_paths
+import Conteudo.Imagens.CaminhosImagens as imgs_paths
 
 
 class TelaRegras(classeTela):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, objUsuario):
+        super().__init__(objUsuario=objUsuario)
 
         self.escala = self.altura / 1080
         self.registrar_rect("botao_Voltar", self.largura // 2 - 100, self.altura // 2 + 225, 200, 50)
@@ -15,9 +15,10 @@ class TelaRegras(classeTela):
         self.texto_regras = ("Regras do Jogo:\n\n"
                              "1. O jogo consiste em formar pares de peças com elementos\n"
                              "químicos e propriedades correspondentes.\n\n"
-                             "2. O jogador e o bot alternam turnos para posicionar suas\n"
+                             "2. Elementos químicos da mesma função inogânica são cor-\nrespondentes\n\n"
+                             "3. O jogador e o bot alternam turnos para posicionar suas\n"
                              "peças no tabuleiro.\n\n"
-                             "3. O jogo termina quando o jogador ou o bot estiverem sem\npeças.\n\n")
+                             "4. O jogo termina quando o jogador ou o bot estiverem sem\npeças, ou o jogo estiver trancado.\n\n")
 
         self.cor_botao_normal = ajustar_cor(255, 255, 255)
         self.cor_botao_hover = ajustar_cor(200, 200, 200)

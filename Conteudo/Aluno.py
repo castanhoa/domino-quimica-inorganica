@@ -1,4 +1,4 @@
-from Usuario import Usuario
+from Conteudo.Usuario import Usuario
 
 from math import e as eulers
 

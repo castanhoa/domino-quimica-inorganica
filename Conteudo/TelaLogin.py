@@ -1,13 +1,17 @@
-from Acessibilidade import tamanho_fonte, ajustar_cor
-from Usuario import Usuario
-from Tela import classeTela
+from Conteudo.Acessibilidade import tamanho_fonte, ajustar_cor
+from Conteudo.Aluno import Aluno
+from Conteudo.Professor import Professor
+
+from Conteudo.Tela import classeTela
 import pygame
-import Imagens.CaminhosImagens as imgs_paths
+import Conteudo.Imagens.CaminhosImagens as imgs_paths
 
 
 class TelaLogin(classeTela):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, cascaUsuario):
+        super().__init__(objUsuario=cascaUsuario.objUsuario)
+
+        self.cascaUsuario = cascaUsuario
 
         self.registrar_rect("input_Login", self.largura // 2 - 100, self.altura // 2 - 50, 200, 50)
         self.registrar_rect("input_Senha", self.largura // 2 - 100, self.altura // 2 + 25, 200, 50)
@@ -42,7 +46,6 @@ class TelaLogin(classeTela):
         self.cor_mensagem = ajustar_cor(0, 0, 0)
 
         self.logo = pygame.image.load(imgs_paths.LOGOTIPO_PATH)
-        self.usuario = Usuario("123", "Aluno", False)
 
         pygame.display.set_icon(self.logo)
         pygame.key.set_repeat(400, 50)
@@ -50,7 +53,31 @@ class TelaLogin(classeTela):
 
 
     def fazer_login(self):
-        logado = self.usuario.tentar_login(
+
+        e_aluno = None
+        # True para aluno, False para professor, e None para incorreto
+
+        if self.texto_login.find("@aluno.cps.sp.gov.br") != -1:
+            e_aluno = True
+        elif self.texto_login.find("@cps.sp.gov.br") != -1:
+            e_aluno = False
+
+        if e_aluno is None:
+            self.mensagem = "Login incorreto! Utilize seu e-mail acadêmico."
+            self.cor_mensagem = ajustar_cor(255, 0, 0)
+            return
+        
+        # Aqui nós iriamos puxar os dados da conta cuja PK é o valor de
+        # texto_login. Mas, como ainda não temos isso, criaremos um objeto
+        # de usuário novo.
+
+        if self.objUsuario is None:
+            if e_aluno:
+                self.cascaUsuario.objUsuario = Aluno(senha=self.texto_senha, nome=self.texto_login, id_turma=1, logado_ao_criar_conta=False)
+            else:
+                self.cascaUsuario.objUsuario = Professor(senha=self.texto_senha, nome=self.texto_login, logado_ao_criar_conta=False)
+        
+        logado = self.cascaUsuario.objUsuario.tentar_login(
             nome = self.texto_login,
             senha = self.texto_senha
         )
@@ -62,6 +89,7 @@ class TelaLogin(classeTela):
         else:
             self.mensagem = "Login e/ou senha incorretos!"
             self.cor_mensagem = ajustar_cor(255, 0, 0)
+
 
     def tratar_eventos(self, evento):
         if evento.type == pygame.MOUSEBUTTONDOWN:

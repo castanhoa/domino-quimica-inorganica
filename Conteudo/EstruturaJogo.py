@@ -1,7 +1,6 @@
-import Domino
+from Conteudo import Domino
 import random
 import copy
-import time
 
 quantia_total_pedras = 28
 

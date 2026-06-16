@@ -1,5 +1,5 @@
-from Acessibilidade import ajustar_cor
-from Tela import classeTela
+from Conteudo.Acessibilidade import ajustar_cor
+from Conteudo.Tela import classeTela
 import pygame
 import math
 

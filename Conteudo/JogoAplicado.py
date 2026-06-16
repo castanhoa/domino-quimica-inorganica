@@ -1,26 +1,21 @@
-from EstruturaJogo import Jogo
-from TelaDeJogo import TelaDeJogo
-from Peca import Peca
+from Conteudo.EstruturaJogo import Jogo
+from Conteudo.Peca import Peca
 import random
 
 # import Imagens.CaminhosImagens as imgs_paths
 
 import time
-from Aluno import Aluno
-
-meu_aluno = Aluno("123", "Robert", 1, True)
 
 # vez do jogador é quando:
 # (self.rodada + self.rodada_offset) % 2 == 0
 
 class Jogatina:
-    def __init__(self, objAluno):
+    def __init__(self, objAluno, tela_de_jogo):
         self.jogo = Jogo(objAluno=objAluno)
     
-        self.tela = TelaDeJogo(objJogatina=self)
+        self.tela = tela_de_jogo
 
         self.rodada = 0
-        self.rodada_antiga = -1
 
         self.rodada_offset = random.randint(0,1)
         self.jogo_finalizado = False
@@ -49,7 +44,7 @@ class Jogatina:
         rect.width = self.tela.tamanho_peca_player[0]
         rect.height = self.tela.tamanho_peca_player[1]
 
-        frontPeca = Peca(imagem=(self.tela.pecaPlayer if is_player else self.tela.pecaBot), rect=rect, referenciaBackend=objPedra )
+        frontPeca = Peca(imagem=(self.tela.pecaPlayer if is_player else self.tela.pecaBot), rect=rect, referenciaBackend=objPedra, publica=is_player)
 
         return frontPeca
 
@@ -122,7 +117,17 @@ class Jogatina:
         
         self.atualizar_pedras_ui()
 
-        self.rodada_antiga = self.rodada
+
+    def comprar_peca_usuario(self):
+        if self.get_vez() != 0:
+            print("Não é a vez do usuário, e sim do bot.")
+            return
+        
+        self.rodada += 1
+
+        self.jogo.jogador_principal.comprar_pedra()
+        
+        self.atualizar_pedras_ui()
 
 
     def realizar_rodada(self):
@@ -143,34 +148,7 @@ class Jogatina:
         if self.get_vez() == 1:
             self.jogo.jogador_IA.jogada_ia()
 
-            self.rodada_antiga = self.rodada
             self.rodada += 1
 
     def iniciar_partida(self):
         self.tempo_inicio_partida = time.perf_counter()
-        self.tela.executar(self.realizar_rodada)
-
-
-minha_jogatina = Jogatina(meu_aluno)
-minha_jogatina.iniciar_partida()
-
-        # for i in range(7):
-        #     nome = f"botao_peca_{i}"
-        #     self.registrar_rect(nome, x, y, 70, 140)
-        #     x += int(80 * self.tela.escala)
-
-        # for i in range(7):
-        #     rect = getattr(self, f"botao_peca_{i}")
-        #     rect.width = self.tamanho_peca_player[0]
-        #     rect.height = self.tamanho_peca_player[1]
-        #     peca = Peca(self.pecaPlayer, rect)
-        #     self.mao.adicionar(peca)
-
-        # for i in range(7):
-        #     rect = pygame.Rect(x, y, 50, 100)
-        #     peca = Peca(self.pecaBot, rect)
-        #     self.mao_bot.adicionar(peca)
-        #     x += int(60 * self.escala)
-
-
-    

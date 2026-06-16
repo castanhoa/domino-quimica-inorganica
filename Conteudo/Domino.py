@@ -1,20 +1,20 @@
 import random
 
-import Banco
+from Conteudo import Banco
 
 NUMERO_DE_PEDRAS = 32
 
 correspondecias = {
   
-'Acido':['HCl', 'HCN','Hl','H2S','HF','H2CrO4', 'Liberam H+ em solução aquosa', 'Geralmente são azedos'], 
+'Acido':['HCl', 'HCN','Hl','H2S','HF','H2CrO4', 'Liberam\nH+ em so-\nlução aquosa', 'Geralmente\nsão azedos'], 
                    
-'Base':['NH3','Fe(OH)3','Cr(OH)3','Ba(OH)2','Fe(OH)3','Cr(OH)3', 'Liberam íons hidroxila em solução aquosa', 'Geralmente são amargos'],
+'Base':['NH3','Fe(OH)3','Cr(OH)3','Ba(OH)2','Fe(OH)3','Cr(OH)3', 'Liberam íons\nhidroxila em\nsolução aquosa', 'Geralmente\nsão amargos'],
 
 'Hidreto':['CaH2','H2O'],
 
 'Oxido':['SiO2','TiO','P2O3','CrO3','V2O5'],
 
-'Sal':['Na2CO3','FeCl3','NaBrO4','HClO4','NaCl','Normalmente tem sabor salgado', 'Não são bons condutores de eletricidade, salvo quando estão dissolvidos em água']
+'Sal':['Na2CO3','FeCl3','NaBrO4','HClO4','NaCl','Normalmente\ntem sabor salgado', 'Se sóli-dos\n,condu-\nzem mal eletri-\ncidade']
 
 }
 

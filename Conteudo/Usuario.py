@@ -1,4 +1,4 @@
-from Seguranca.AjudaHash import hash_padrao, comparar_hashes
+from Conteudo.Seguranca.AjudaHash import hash_padrao, comparar_hashes
 
 
 class Usuario():

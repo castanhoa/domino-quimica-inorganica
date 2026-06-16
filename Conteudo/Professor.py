@@ -1,4 +1,4 @@
-from Usuario import Usuario
+from Conteudo.Usuario import Usuario
 
 class Professor(Usuario):
     def __init__(self, senha:str , nome:str , turmas:list , logado_ao_criar_conta:bool=False):

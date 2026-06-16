@@ -1,14 +1,14 @@
-from Acessibilidade import tamanho_fonte, ajustar_cor
-from Tela import classeTela
+from Conteudo.Acessibilidade import tamanho_fonte, ajustar_cor
+from Conteudo.Tela import classeTela
 import pygame
 import matplotlib.pyplot as plt
 import numpy as np
-import Imagens.CaminhosImagens as imgs_paths
+import Conteudo.Imagens.CaminhosImagens as imgs_paths
 
 
 class TelaRelatorio(classeTela):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, objUsuario):
+        super().__init__(objUsuario=objUsuario)
 
         self.registrar_rect("botao_GerarRelatorio", self.largura // 2 - 100, self.altura // 2 + 50, 200, 50)
         self.registrar_rect("botao_Voltar", self.largura // 2 - 100, self.altura // 2 + 125, 200, 50)

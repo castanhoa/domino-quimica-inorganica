@@ -1,4 +1,4 @@
-import Acessibilidade
+from Conteudo import Acessibilidade
 import pygame
 import os
 import inspect
@@ -6,9 +6,11 @@ import inspect
 os.environ['SDL_VIDEO_WINDOW_POS'] = '0, 30'
 
 class classeTela:
-    def __init__(self):
+    def __init__(self, objUsuario=None):
         
         pygame.init()
+
+        self.objUsuario = objUsuario
         
         infoTela = pygame.display.Info()
         largura_monitor = infoTela.current_w

@@ -1,12 +1,12 @@
-from Acessibilidade import tamanho_fonte, ajustar_cor
-from Tela import classeTela
+from Conteudo.Acessibilidade import tamanho_fonte, ajustar_cor
+from Conteudo.Tela import classeTela
 import pygame
-import Imagens.CaminhosImagens as imgs_paths
+import Conteudo.Imagens.CaminhosImagens as imgs_paths
 
 
 class TelaEstatisticas(classeTela):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, objUsuario):
+        super().__init__(objUsuario=objUsuario)
 
         self.escala = self.altura / 1080
         self.registrar_rect("botao_Voltar", self.largura // 2 - 100, self.altura // 2 + 175, 200, 50)

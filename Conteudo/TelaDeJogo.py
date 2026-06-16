@@ -1,18 +1,18 @@
-from Acessibilidade import tamanho_fonte, ajustar_cor
-from Tela import classeTela
-from MaoBot import MaoBot
-from Mesa import Mesa
-from Peca import Peca
-from Mao import Mao
-import Imagens.CaminhosImagens as imgs_paths
+from Conteudo.Acessibilidade import tamanho_fonte, ajustar_cor
+from Conteudo.Tela import classeTela
+from Conteudo.MaoBot import MaoBot
+from Conteudo.Mesa import Mesa
+# from Peca import Peca
+from Conteudo.Mao import Mao
+from Conteudo.JogoAplicado import Jogatina
+import Conteudo.Imagens.CaminhosImagens as imgs_paths
 import pygame
 
 class TelaDeJogo(classeTela):
 
-    def __init__(self, objJogatina):
-        super().__init__()  # SEM MEXER NO VISUAL
+    def __init__(self, objUsuario):
+        super().__init__(objUsuario=objUsuario)
 
-        self.objJogatina = objJogatina
         self.escala = self.altura / 1080
         self.botao_peca = []
         self.mao_bot = MaoBot((self.largura // 2 - int(200 * self.escala), int(self.altura * 0.18)),
@@ -31,27 +31,33 @@ class TelaDeJogo(classeTela):
 
         self.pecaPlayer = pygame.transform.scale(pygame.image.load(imgs_paths.PECAPLAYER_PATH),
         self.tamanho_peca_player)
+      
         self.pecaBot = pygame.transform.scale(pygame.image.load(imgs_paths.PECABOT_PATH),
         self.tamanho_peca_bot)
+        
         self.MontePecas = pygame.transform.scale(pygame.image.load(imgs_paths.MONTEPECA_PATH),
         self.tamanho_monte)
+        
         self.fonte = pygame.font.SysFont("roboto", tamanho_fonte(20))
+        
         self.logo = pygame.image.load(imgs_paths.LOGOTIPO_PATH)
-
-        self.mesa = Mesa((self.largura // 2, self.altura // 2), int(85 * self.escala))
-        self.mao = Mao((self.largura // 2 - int(275 * self.escala),
-                    self.altura // 2 + int(220 * self.escala)), int(80 * self.escala))
+        self.mesa = Mesa((self.largura // 2, self.altura // 2), self.escala)
+        self.mao = Mao((self.largura // 2 - int(275 * self.escala), self.altura // 2 + int(220 * self.escala)), int(80 * self.escala))
         
         pygame.display.set_icon(self.logo)
+
+        self.objJogatina = Jogatina(objAluno=self.objUsuario, tela_de_jogo=self)
+        self.objJogatina.iniciar_partida()
     
 
     def tratar_eventos(self, evento):
 
         if evento.type == pygame.MOUSEBUTTONDOWN:
             if self.botao_Monte.collidepoint(evento.pos):
-                rect = pygame.Rect(1000, 300, 70, 140)
-                nova = Peca(self.pecaPlayer, rect)
-                self.mao.adicionar(nova)
+                self.objJogatina.comprar_peca_usuario()
+                # rect = pygame.Rect(1000, 300, 70, 140)
+                # nova = Peca(self.pecaPlayer, rect, )
+                # self.mao.adicionar(nova)
             
             if self.botao_Voltar.collidepoint(evento.pos):
                 self.proxima_tela = "inicio"
@@ -59,6 +65,7 @@ class TelaDeJogo(classeTela):
 
             for peca in self.mao.pecas:
                 if peca.get_rect().collidepoint(evento.pos):
+                    peca.angulo = 180
                     self.objJogatina.fazer_jogada_usuario(peca)
 
     def recriar_fontes(self):
