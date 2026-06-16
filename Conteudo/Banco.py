@@ -147,7 +147,7 @@ def pegar_dados_alunos(dado_determinante: String, id_turma: int) -> list[Aluno]:
             for aluno in alunos
             ]
     
-    def pegar_instancia_alunos(id_aluno, lista : List[Alunos]):
+def pegar_instancia_alunos(id_aluno, lista : List[Alunos]):
         with obter_sessao() as sessao:
             aluno = sessao.query(Aluno).filter(Aluno.id == id_aluno)
             if aluno is None:
