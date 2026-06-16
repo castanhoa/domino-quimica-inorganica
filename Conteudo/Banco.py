@@ -168,10 +168,3 @@ def pegar_dados_aluno(id_aluno):
         if aluno is None:
             raise ValueError(f"aluno não encontrado com id {id_aluno}")
         return f"{aluno.nome_aluno}, jogos: {aluno.partidas_jogadas}, vitorias {aluno.partidas_vencidas}\n {aluno.acertos/aluno.erros}"
-# def pegar_instancia_alunos(id_aluno, lista : List[Alunos]):
-#         with obter_sessao() as sessao:
-#             aluno = sessao.query(Aluno).filter(Aluno.id == id_aluno)
-#             if aluno is None:
-#                 raise ValueError(f"aluno não encontrado com id {id_aluno}")
-#             for obj in lista:
-#                 if aluno.nome
