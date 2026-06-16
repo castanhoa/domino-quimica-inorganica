@@ -88,7 +88,7 @@ class Jogo:
         self.jogador_IA.inicializar_pedras(jog_ia_pedras)
         todas_pedras = sub_lists(todas_pedras, self.jogador_IA.get_pedras())
 
-    def resultado(self):
+    def resultado(self, delta_t):
 
         jogo_trancado = True
         jogo_finalizado = False
@@ -132,7 +132,7 @@ class Jogo:
         len_tentativas_conexao_certas = len_tentativas_conexao - len(tentativas_conexao_erradas)
 
         # atualizar dados do aluno
-        self.objAluno.resultado(aluno_venceu, len_tentativas_conexao, len_tentativas_conexao_certas)
+        self.objAluno.resultado(aluno_venceu, len_tentativas_conexao, len_tentativas_conexao_certas, delta_t)
 
         return True
 

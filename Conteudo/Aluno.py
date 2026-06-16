@@ -14,6 +14,8 @@ class Aluno(Usuario):
         self.__tentativas_conexao = 1
         self.__tentativas_conexao_corretas = 0
 
+        self.__tempo_total_jogado = 0
+
 
     def get_estatisticas(self):
 
@@ -31,17 +33,27 @@ class Aluno(Usuario):
         estatisticas_tentativas_conexao.append(self.__tentativas_conexao)
         estatisticas_tentativas_conexao.append(self.__tentativas_conexao_corretas / self.__tentativas_conexao)
 
-        return estatisticas_partidas, estatisticas_tentativas_conexao
+        #----#
+
+        estatisticas_tempo = []
+
+        estatisticas_tempo.append(self.__tempo_total_jogado)
+        estatisticas_tempo.append(self.__tempo_total_jogado / self.__partidas_jogadas)
+
+
+        return estatisticas_partidas, estatisticas_tentativas_conexao, estatisticas_tempo
     
     def obter_dificuldade(self):
-        stats_partidas, stats_tentativas_conexao = self.get_estatisticas()
+        stats_partidas, stats_tentativas_conexao, _ = self.get_estatisticas()
 
         return sigmoid_var(stats_partidas[2] + stats_tentativas_conexao[2])
 
-    def resultado(self, victory:bool, tentativas_conexao_partida:int, tentativas_conexao_corretas_partida:int):
+    def resultado(self, victory:bool, tentativas_conexao_partida:int, tentativas_conexao_corretas_partida:int, delta_t):
         self.__partidas_jogadas +=1
         if victory:
             self.__partidas_jogadas_vencidas +=1
 
         self.__tentativas_conexao += tentativas_conexao_partida
         self.__tentativas_conexao_corretas += tentativas_conexao_corretas_partida
+
+        self.__tempo_total_jogado += delta_t

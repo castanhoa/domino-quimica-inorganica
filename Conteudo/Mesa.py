@@ -18,13 +18,11 @@ class Mesa:
 
         ultima = self.pecas[extremidade]
 
-        nova_pos = pygame.Vector2(ultima.destino) + self.direcao * self.espaco
-        if extremidade  == -1:
-            nova_pos *= -1
+        nova_pos = pygame.Vector2(ultima.destino) + self.direcao * self.espaco * (-1 if extremidade == -1 else 1)
 
         peca.mover_para(nova_pos)
 
-        self.pecas.insert((len(self.self.pecas) if extremidade == -1 else extremidade), peca)
+        self.pecas.insert((len(self.pecas) if extremidade == -1 else extremidade), peca)
 
         self._ajustar_direcao()
 

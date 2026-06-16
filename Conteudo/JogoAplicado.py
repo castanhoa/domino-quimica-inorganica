@@ -2,11 +2,10 @@ from EstruturaJogo import Jogo
 from TelaDeJogo import TelaDeJogo
 from Peca import Peca
 import random
-import concurrent.futures
 
 # import Imagens.CaminhosImagens as imgs_paths
 
-from time import sleep as wait
+import time
 from Aluno import Aluno
 
 meu_aluno = Aluno("123", "Robert", 1, True)
@@ -25,6 +24,9 @@ class Jogatina:
 
         self.rodada_offset = random.randint(0,1)
         self.jogo_finalizado = False
+
+        self.tempo_inicio_partida = -1
+        self.tempo_fim_partida = -1
 
     def get_vez(self):
         return (self.rodada + self.rodada_offset) % 2
@@ -123,20 +125,19 @@ class Jogatina:
         self.rodada_antiga = self.rodada
 
 
-    def iniciar_partida(self):
+    def realizar_rodada(self):
 
         if self.jogo_finalizado:
             print("JOGO FINALIZADO")
             return True
 
         self.atualizar_pedras_ui()
-        self.jogo_finalizado = self.jogo.resultado()
+        self.jogo_finalizado = self.jogo.resultado(self.tempo_fim_partida-self.tempo_inicio_partida)
         if self.jogo_finalizado:
             print("JOGO FINALIZADO")
             return True
         
-        #if self.get_vez() != self.rodada_antiga:
-
+        self.tempo_fim_partida = time.perf_counter()
         print(f"VEZ: {self.get_vez()}")
             
         if self.get_vez() == 1:
@@ -145,9 +146,13 @@ class Jogatina:
             self.rodada_antiga = self.rodada
             self.rodada += 1
 
+    def iniciar_partida(self):
+        self.tempo_inicio_partida = time.perf_counter()
+        self.tela.executar(self.realizar_rodada)
+
 
 minha_jogatina = Jogatina(meu_aluno)
-minha_jogatina.tela.executar(minha_jogatina.iniciar_partida)
+minha_jogatina.iniciar_partida()
 
         # for i in range(7):
         #     nome = f"botao_peca_{i}"

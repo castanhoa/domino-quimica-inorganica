@@ -1,6 +1,7 @@
 import Acessibilidade
 import pygame
 import os
+import inspect
 
 os.environ['SDL_VIDEO_WINDOW_POS'] = '0, 30'
 
@@ -46,9 +47,16 @@ class classeTela:
 
             setattr(self, item["nome"], novo_rect)
 
-    def executar(self):
+    def executar(self, metodo_adicional=None):
+
+        e_metodo = inspect.ismethod(metodo_adicional)
 
         while self.rodando:
+
+            if e_metodo:
+                metodo_adicional()
+
+
 
             self.clock.tick(120)
 
