@@ -57,5 +57,7 @@ CREATE TABLE IF NOT EXISTS aluno (
     num_partidas INTEGER DEFAULT 0,
     num_vitorias INTEGER DEFAULT 0,
     tempo_jogo TIME DEFAULT '00:00:00'
+    email VARCHAR(75)
+    senha: VARCHAR(20)
 );
 
