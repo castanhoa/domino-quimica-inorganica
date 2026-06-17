@@ -2,7 +2,10 @@ from Conteudo.Acessibilidade import tamanho_fonte, ajustar_cor
 from Conteudo.Aluno import Aluno
 from Conteudo.Professor import Professor
 
+from Conteudo.Banco import buscar_senha, pegar_dados_aluno, ver_existencia_de_aluno, ver_existencia_de_professor
+
 from Conteudo.Tela import classeTela
+from Conteudo.Seguranca.AjudaHash import hash_padrao, comparar_hashes
 import pygame
 import Conteudo.Imagens.CaminhosImagens as imgs_paths
 
@@ -57,39 +60,58 @@ class TelaLogin(classeTela):
         e_aluno = None
         # True para aluno, False para professor, e None para incorreto
 
-        if self.texto_login.find("@aluno.cps.sp.gov.br") != -1:
+        if "@aluno.cps.sp.gov.br" in self.texto_login:
             e_aluno = True
-        elif self.texto_login.find("@cps.sp.gov.br") != -1:
+        elif "@cps.sp.gov.br" in self.texto_login:
             e_aluno = False
 
         if e_aluno is None:
             self.mensagem = "Login incorreto! Utilize seu e-mail acadêmico."
             self.cor_mensagem = ajustar_cor(255, 0, 0)
             return
-        
-        # Aqui nós iriamos puxar os dados da conta cuja PK é o valor de
-        # texto_login. Mas, como ainda não temos isso, criaremos um objeto
-        # de usuário novo.
 
-        if self.objUsuario is None:
+        if e_aluno:
+            existe = ver_existencia_de_aluno(self.texto_login)
+
+            if not existe:
+                self.mensagem = "E-mail de aluno inexistente!"
+                self.cor_mensagem = ajustar_cor(255, 0, 0)
+                return 
+        else:
+            existe = ver_existencia_de_professor(self.texto_login)
+            
+            if not existe:
+                self.mensagem = "E-mail de professor inexistente!"
+                self.cor_mensagem = ajustar_cor(255, 0, 0)
+                return 
+        
+        hash_senha_banco = buscar_senha(correio=self.texto_login, e_aluno=e_aluno)
+        hash_senha_ui = hash_padrao(self.texto_senha)
+
+        login_validado = comparar_hashes(hash0=hash_senha_banco, hash1=hash_senha_ui)
+
+        if not login_validado:
+            self.mensagem = "Login e/ou senha incorretos!"
+            self.cor_mensagem = ajustar_cor(255, 0, 0)
+            return   
+
+        try:
             if e_aluno:
-                self.cascaUsuario.objUsuario = Aluno(senha=self.texto_senha, nome=self.texto_login, id_turma=1, logado_ao_criar_conta=False)
-            else:
-                self.cascaUsuario.objUsuario = Professor(senha=self.texto_senha, nome=self.texto_login, logado_ao_criar_conta=False)
-        
-        logado = self.cascaUsuario.objUsuario.tentar_login(
-            nome = self.texto_login,
-            senha = self.texto_senha
-        )
+                objAluno = Aluno(self.texto_senha, self.texto_login, True)
+                objAluno.set_dados_jogatinas(*pegar_dados_aluno(self.texto_login))
 
-        if logado:
+                self.cascaUsuario.objUsuario = objAluno
+                
+            else:
+                self.cascaUsuario.objUsuario = Professor(self.texto_senha, self.texto_login, True)
+
             self.proxima_tela = "inicio"
             self.rodando = False
         
-        else:
-            self.mensagem = "Login e/ou senha incorretos!"
+        except Exception as e:
+            self.mensagem = "Algum erro ocorreu. Tente novamente."
             self.cor_mensagem = ajustar_cor(255, 0, 0)
-
+            raise(e)
 
     def tratar_eventos(self, evento):
         if evento.type == pygame.MOUSEBUTTONDOWN:

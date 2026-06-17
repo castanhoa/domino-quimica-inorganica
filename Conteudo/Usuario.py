@@ -8,6 +8,9 @@ class Usuario():
         self.__nome_fatual= nome
         self.__logado = logado_ao_criar_conta
 
+    def get_username(self):
+        return self.__nome_fatual
+
     def tentar_login(self, senha, nome):
         if ( self.__nome_fatual == nome ) and ( comparar_hashes(self.__hash_senha_fatual , hash_padrao(senha)) ):
             self.__logado = True

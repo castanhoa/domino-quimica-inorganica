@@ -15,6 +15,7 @@ class Mesa:
 
         if len(self.pecas) == 0:
             peca.mover_para(self.centro)
+            peca.set_angulo(self.angulo_pecas)
             self.pecas.append(peca)
             return
 

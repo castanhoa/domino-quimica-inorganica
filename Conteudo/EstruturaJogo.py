@@ -1,6 +1,7 @@
 from Conteudo import Domino
 import random
 import copy
+import time
 
 quantia_total_pedras = 28
 
@@ -178,7 +179,7 @@ class Jogo:
                                        }                    
                     possiveis_jogadas.append(possivel_jogada)
 
-            num_jogadas_erradas = int((len(possiveis_jogadas))*chance_erro / (1 - chance_erro))
+            num_jogadas_erradas = int((len(possiveis_jogadas))*chance_erro / max(0.1, 1 - chance_erro))
 
             for _ in range(num_jogadas_erradas):
                 possivel_jogada = {
