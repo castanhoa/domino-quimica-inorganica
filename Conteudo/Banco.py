@@ -147,6 +147,18 @@ def pegar_dados_alunos(dado_determinante: String, id_turma: int) -> list[Aluno]:
             for aluno in alunos
             ]
     
+def pegar_instancia_alunos(id_aluno, lista : List[Alunos]):
+        with obter_sessao() as sessao:
+            aluno = sessao.query(Aluno).filter(Aluno.id == id_aluno)
+            if aluno is None:
+                raise ValueError(f"aluno não encontrado com id {id_aluno}")
+            for obj in lista:
+                if aluno.nome == obj.nome:
+                    return obj
+            return "Erro"
+
+
+
 def inicializar_pedra(id_pedra):
     with obter_sessao() as sessao:
         peca = sessao.query(peca).filter_by(id=id_pedra).first()
@@ -155,14 +167,24 @@ def inicializar_pedra(id_pedra):
         return (peca.value_0, peca.value_1)
 def pegar_dados_aluno(id_aluno):
     with obter_sessao() as sessao:
-        aluno = sessao.query(Aluno).filter(Aluno.id == id_aluno)
+        aluno = sessao.query(Aluno).filter(Aluno.id_aluno == id_aluno)
         if aluno is None:
             raise ValueError(f"aluno não encontrado com id {id_aluno}")
         return f"{aluno.nome_aluno}, jogos: {aluno.partidas_jogadas}, vitorias {aluno.partidas_vencidas}\n {aluno.acertos/aluno.erros}"
-# def pegar_instancia_alunos(id_aluno, lista : List[Alunos]):
-#         with obter_sessao() as sessao:
-#             aluno = sessao.query(Aluno).filter(Aluno.id == id_aluno)
-#             if aluno is None:
-#                 raise ValueError(f"aluno não encontrado com id {id_aluno}")
-#             for obj in lista:
-#                 if aluno.nome
+aluno = sessao.query(Aluno).filter(Aluno.id_aluno == id_aluno)
+        if aluno is None:
+            raise ValueError(f"aluno não encontrado com id {id_aluno}")
+        return f"{aluno.nome_aluno}, jogos: {aluno.partidas_jogadas}, vitorias {aluno.partidas_vencidas}\n {aluno.acertos/aluno.erros}"
+
+def atualizar(id, tempo, resultado: bool):
+    with obter_sessao() as sessao
+    update = sessao.query(Aluno).filter_by(id = Aluno.id_aluno).first
+    if update:
+        update.tempo_jogo += tempo
+        update.num_partidas += 1
+        if resultado:
+            update.num_vitorias +=1
+        sessao.commit()
+        return "Atualizada com sucesso"
+    else:
+        return "Problema"
