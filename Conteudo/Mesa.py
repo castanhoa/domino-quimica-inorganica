@@ -46,20 +46,20 @@ class Mesa:
 
         length_pecas = len(self.pecas)
 
-        if length_pecas % 7 == 0:
+        if length_pecas % 6 == 0:
             self.direcao = pygame.Vector2(0, 1)
             self.angulo_pecas = 180
 
-        elif length_pecas % 9 == 0:
+        elif length_pecas % 8 == 0:
             self.direcao = pygame.Vector2(-1, 0)
             self.angulo_pecas = 90
         
-        elif length_pecas % 16 == 0:
+        elif length_pecas % 15 == 0:
             self.direcao = pygame.Vector2(0, 1)
             self.angulo_pecas = 180
 
         
-        elif length_pecas % 18 == 0:
+        elif length_pecas % 17 == 0:
             self.direcao = pygame.Vector2(1, 0)
             self.angulo_pecas = 90
 

@@ -17,12 +17,12 @@ class Peca:
         self.destino = pygame.Vector2(rect.topleft)
         self.referenciaBackend = referenciaBackend
 
-        self.texto_cima = f"0: {referenciaBackend.valor_0}" if publica else ""
-        self.texto_baixo = f"1: {referenciaBackend.valor_1}" if publica else ""
+        self.texto_cima = f"0: {referenciaBackend.valor_1}" if publica else ""
+        self.texto_baixo = f"1: {referenciaBackend.valor_0}" if publica else ""
 
         self.angulo_fator = 0
 
-        self.angulo = 180
+        self.angulo = 0
         self.velocidade = 0.15
 
         fonte_cima = pygame.font.SysFont("roboto", calcular_tamanho_fonte(self.texto_cima))
@@ -100,6 +100,14 @@ class Peca:
 
     def set_angulo(self, angulo):
         self.angulo = angulo + self.angulo_fator
+
+        if self.angulo % 180 == 0:
+
+            b = self.texto_baixo
+            c = self.texto_cima
+
+            self.texto_baixo = c
+            self.texto_cima = b
 
     def get_rect(self):
         return pygame.Rect(

@@ -13,8 +13,8 @@ class TelaRelatorio(classeTela):
     def __init__(self, objUsuario):
         super().__init__(objUsuario=objUsuario)
 
-        self.registrar_rect("botao_GerarRelatorio", self.largura // 2 - 100, self.altura // 2 + 50, 200, 50)
-        self.registrar_rect("botao_Voltar", self.largura // 2 - 100, self.altura // 2 + 125, 200, 50)
+        self.registrar_rect("botao_GerarRelatorio", self.largura // 2 - 100, self.altura // 2 + 275, 200, 50)
+        self.registrar_rect("botao_Voltar", self.largura // 2 - 100, self.altura // 2 + 350, 200, 50)
 
         self.cor_botao_atual_gerar = [255, 255, 255]
         self.cor_botao_atual_voltar = [255, 255, 255]
@@ -29,11 +29,25 @@ class TelaRelatorio(classeTela):
         if evento.type == pygame.MOUSEBUTTONDOWN:
             if self.botao_GerarRelatorio.collidepoint(evento.pos):
                 
-                dados = np.array([25, 35, 20, 20])
-                destaque = [0.1, 0, 0, 0] 
-                fig, ax = plt.subplots(figsize=(5, 5))
-                ax.pie(dados, autopct='%1.1f%%', startangle=90, explode=destaque, shadow=True, colors=['#ff9999','#66b3ff','#99ff99','#ffcc99'])
-                ax.set_title('Gráfico de pizza (exemplo)')
+                dados = pegar_dados_alunos()
+
+                tempos = np.array([
+                    aluno["tempo_total_jogado_em_segundos"]
+                    for aluno in dados.values()
+                ])
+
+                plt.figure(figsize=(8, 5))
+
+                plt.hist(
+                    tempos,
+                    bins=10,
+                    color="lightblue",
+                    edgecolor="black"
+                )
+
+                plt.title("Distribuição do Tempo Jogado")
+                plt.xlabel("Tempo (segundos)")
+                plt.ylabel("Quantidade de alunos")
 
                 plt.show()
 

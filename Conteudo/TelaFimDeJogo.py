@@ -18,7 +18,7 @@ class TelaFimDeJogo(classeTela):
         if len(correcoes_string) == 0 or correcoes_string is None:
             self.correcoes_string = ["Você acertou tudo! Parabéns!"]
 
-        self.registrar_rect("botao_Voltar", self.largura // 2 - 100, self.altura // 2 + 225, 200, 50)
+        self.registrar_rect("botao_Voltar", self.largura // 2 - 100, self.altura // 2 + 350, 200, 50)
         self.registrar_rect("texto_correcoes", self.largura // 2 - 125, self.altura // 2 - 50, 250, 100)
 
         self.cor_botao_atual_voltar = [255, 255, 255]

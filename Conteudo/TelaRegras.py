@@ -54,7 +54,7 @@ class TelaRegras(classeTela):
 
         pygame.draw.rect(self.tela, cor_botao_voltar, self.botao_Voltar, border_radius=8)
         pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Voltar, 2, border_radius=8)
-        pygame.draw.rect(self.tela, ajustar_cor(0, 0, 0), self.regras, 2, border_radius=8)
+        pygame.draw.rect(self.tela, ajustar_cor(255, 255, 255), self.regras, 1, border_radius=8)
 
         texto_botao_voltar = self.fonte.render("Voltar", True, ajustar_cor(0, 0, 0))
         texto_regras = self.fonte.render("Regras do Jogo:\n\n"

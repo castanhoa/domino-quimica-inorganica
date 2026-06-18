@@ -92,30 +92,25 @@ class Jogatina:
 
         for i, pedra in enumerate(self.jogo.tabuleiro):
 
-            if len(pedra.pedras_conectadas) > 0 and not pedra.pedras_conectadas[0] is None:
-                idx = self.jogo.tabuleiro.index(pedra.pedras_conectadas[0])
-                add = False
-                if pedra.pedras_conectadas[0] in self.tela.mesa.pecas:
-                   add = self.tela.mesa.pecas[self.tela.mesa.pecas.index(pedra.pedras_conectadas[0])].angulo_fator
-                
-                
-                #angulo_fator = 180 + add if idx > i else 0
-                angulo_fator = 0
+            angulo_fator = 0
+            # var = 0
 
-                # if add:
-                #     angulo_fator += add
+            # if pedra in self.tela.mesa.pecas:
+            #     var = self.tela.mesa.pecas.index(pedra)
 
-                if idx > i:
-                    angulo_fator += 180
-                    
-            else:
-                angulo_fator = 0
+            for idx_0, pedr_0 in pedra.pedras_conectadas.items():
+                if not pedr_0 is None:
+                    for idx_1, pedr_1 in pedr_0.pedras_conectadas.items():
+                        if not pedr_1 is None:
+                            if pedra == pedr_1:
+                                if idx_0 == idx_1:
+                                    angulo_fator += 180
 
             ui_peca = self.converter_pedra_back_para_front(pedra, i, True)
             ui_peca.angulo_fator = angulo_fator
 
             if ui_peca not in self.tela.mesa.pecas:
-                self.tela.mesa.adicionar_peca(ui_peca, (0 if i == 0 else -1))
+                 self.tela.mesa.adicionar_peca(ui_peca, (0 if i == 0 else -1))  
 
         #print(f"LEN(TABULEIRO) = {len(self.jogo.tabuleiro)}")
         #print(f"LEN(MESA) = {len(self.tela.mesa.pecas)}")

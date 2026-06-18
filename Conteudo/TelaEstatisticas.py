@@ -15,17 +15,17 @@ class TelaEstatisticas(classeTela):
         self.objUsuario = objUsuario
 
         self.escala = self.altura / 1080
-        self.registrar_rect("botao_Voltar", self.largura // 2, self.altura // 8 + 175, 200, 50)
-        self.registrar_rect("tempo_jogado", self.largura // 2, self.altura // 8, 200, 100)
-        self.registrar_rect("tempo_por_partida", self.largura // 2, self.altura // 8 - 50, 200, 100)
+        self.registrar_rect("botao_Voltar", self.largura // 2 - 100, self.altura // 2 + 350, 200, 50)
+        self.registrar_rect("tempo_jogado", self.largura // 2 - 100, self.altura // 2 - 100, 200, 100)
+        self.registrar_rect("tempo_por_partida", self.largura // 2 - 100, self.altura // 2 - 50, 200, 100)
     
-        self.registrar_rect("conexoes", self.largura // 2, self.altura // 8 - 100, 200, 100)
-        self.registrar_rect("conexoes_corretas", self.largura // 2, self.altura // 8 - 150, 200, 100)
-        self.registrar_rect("razao_conexoes", self.largura // 2, self.altura // 8 - 200, 200, 100)
+        self.registrar_rect("conexoes", self.largura // 2 - 100, self.altura // 2, 200, 100)
+        self.registrar_rect("conexoes_corretas", self.largura // 2 - 100, self.altura // 2 + 50, 200, 100)
+        self.registrar_rect("razao_conexoes", self.largura // 2 - 100, self.altura // 2 + 100, 200, 100)
 
-        self.registrar_rect("partidas", self.largura // 2, self.altura // 8 - 100, 200, 100)
-        self.registrar_rect("partidas_vitoriosas", self.largura // 2, self.altura // 8 - 150, 200, 100)
-        self.registrar_rect("razao_partidas", self.largura // 2, self.altura // 8 - 200, 200, 100)
+        self.registrar_rect("partidas", self.largura // 2 - 100, self.altura // 2 + 250, 200, 100)
+        self.registrar_rect("partidas_vitoriosas", self.largura // 2 - 100, self.altura // 2 + 200, 200, 100)
+        self.registrar_rect("razao_partidas", self.largura // 2 - 100, self.altura // 2 + 150, 200, 100)
 
 
         # self._texto_tempo_jogado = "Tempo Jogado:"
@@ -83,16 +83,16 @@ class TelaEstatisticas(classeTela):
 
         pygame.draw.rect(self.tela, cor_botao_voltar, self.botao_Voltar, border_radius=8)
         pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Voltar, 2, border_radius=8)
-        pygame.draw.rect(self.tela, ajustar_cor(0, 0, 0), self.tempo_jogado, 2, border_radius=8)
-        pygame.draw.rect(self.tela, ajustar_cor(0, 0, 0), self.tempo_por_partida, 2, border_radius=8)
+        pygame.draw.rect(self.tela, ajustar_cor(255, 255, 255), self.tempo_jogado, 1, border_radius=8)
+        pygame.draw.rect(self.tela, ajustar_cor(255, 255, 255), self.tempo_por_partida, 1, border_radius=8)
         
-        pygame.draw.rect(self.tela, ajustar_cor(0, 0, 0), self.conexoes, 2, border_radius=8)
-        pygame.draw.rect(self.tela, ajustar_cor(0, 0, 0), self.conexoes_corretas, 2, border_radius=8)
-        pygame.draw.rect(self.tela, ajustar_cor(0, 0, 0), self.razao_conexoes, 2, border_radius=8)
+        pygame.draw.rect(self.tela, ajustar_cor(255, 255, 255), self.conexoes, 1, border_radius=8)
+        pygame.draw.rect(self.tela, ajustar_cor(255, 255, 255), self.conexoes_corretas, 1, border_radius=8)
+        pygame.draw.rect(self.tela, ajustar_cor(255, 255, 255), self.razao_conexoes, 1, border_radius=8)
 
-        pygame.draw.rect(self.tela, ajustar_cor(0, 0, 0), self.partidas, 2, border_radius=8)
-        pygame.draw.rect(self.tela, ajustar_cor(0, 0, 0), self.partidas_vitoriosas, 2, border_radius=8)
-        pygame.draw.rect(self.tela, ajustar_cor(0, 0, 0), self.razao_partidas, 2, border_radius=8)
+        pygame.draw.rect(self.tela, ajustar_cor(255, 255, 255), self.partidas, 1, border_radius=8)
+        pygame.draw.rect(self.tela, ajustar_cor(255, 255, 255), self.partidas_vitoriosas, 1, border_radius=8)
+        pygame.draw.rect(self.tela, ajustar_cor(255, 255, 255), self.razao_partidas, 1, border_radius=8)
 
         estatisticas_partidas, estatisticas_tentativas_conexao, estatisticas_tempo = self.objUsuario.get_estatisticas()
 
@@ -101,13 +101,13 @@ class TelaEstatisticas(classeTela):
         texto_tempo_jogado = self.fonte.render(f"Tempo total Jogado: {seg_para_min(estatisticas_tempo[0])} minutos", True, ajustar_cor(0, 0, 0))
         texto_tempo_por_partida = self.fonte.render(f"Tempo médio por partida: {seg_para_min(estatisticas_tempo[1])} minutos", True, ajustar_cor(0, 0, 0))
         
-        texto_conexoes = self.fonte.render(f"Tentativas totais de conectar peças: {estatisticas_tentativas_conexao[1]} minutos", True, ajustar_cor(0, 0, 0))
-        texto_conexoes_corretas = self.fonte.render(f"Tentativas corretas de conectar peças: {estatisticas_tentativas_conexao[0]} minutos", True, ajustar_cor(0, 0, 0))
-        texto_razao_conexoes = self.fonte.render(f"Taxa de acerto na conexão de peças: {round(estatisticas_tentativas_conexao[2]*100, 2)} minutos", True, ajustar_cor(0, 0, 0))
+        texto_conexoes = self.fonte.render(f"Tentativas totais de conectar peças: {estatisticas_tentativas_conexao[1]}", True, ajustar_cor(0, 0, 0))
+        texto_conexoes_corretas = self.fonte.render(f"Tentativas corretas de conectar peças: {estatisticas_tentativas_conexao[0]}", True, ajustar_cor(0, 0, 0))
+        texto_razao_conexoes = self.fonte.render(f"Taxa de acerto na conexão de peças: {round(estatisticas_tentativas_conexao[2]*100, 2)}%", True, ajustar_cor(0, 0, 0))
 
-        texto_partidas = self.fonte.render(f"Partidas totais: {estatisticas_partidas[1]} minutos", True, ajustar_cor(0, 0, 0))
-        texto_partidas_vitoriosas = self.fonte.render(f"Tentativas corretas de conectar peças: {estatisticas_partidas[0]} minutos", True, ajustar_cor(0, 0, 0))
-        texto_razao_partidas = self.fonte.render(f"Taxa de acerto na conexão de peças: {round(estatisticas_partidas[2]*100, 2)} minutos", True, ajustar_cor(0, 0, 0))
+        texto_partidas = self.fonte.render(f"Partidas totais: {estatisticas_partidas[1]}", True, ajustar_cor(0, 0, 0))
+        texto_partidas_vitoriosas = self.fonte.render(f"Tentativas corretas de conectar peças: {estatisticas_partidas[0]}", True, ajustar_cor(0, 0, 0))
+        texto_razao_partidas = self.fonte.render(f"Taxa de acerto na conexão de peças: {round(estatisticas_partidas[2]*100, 2)}%", True, ajustar_cor(0, 0, 0))
 
         self.tela.blit(texto_botao_voltar, texto_botao_voltar.get_rect(center=self.botao_Voltar.center))
         

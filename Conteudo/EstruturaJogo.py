@@ -81,7 +81,7 @@ class Jogo:
 
         self.difficuldade = objAluno.obter_dificuldade()
 
-        self.todas_pedras_originais = Domino.obter_todas_pedras(7*2)
+        self.todas_pedras_originais = Domino.obter_todas_pedras(7 * 4 + 1)
 
         quantia_total_pedras = len(self.todas_pedras_originais)
 
@@ -153,7 +153,7 @@ class Jogo:
         if not delta_t is None:
             self.objAluno.resultado(aluno_venceu, len_tentativas_conexao, len_tentativas_conexao_certas, delta_t)
 
-        return True, aluno_venceu, self.jogador_principal.get_correcoes_dos_erros(False)
+        return True, aluno_venceu, self.jogador_principal.get_correcoes_dos_erros(retornar_string=False)
 
     class Jogador:
         def __init__(self, jogo:Jogo, apelido):
@@ -340,22 +340,18 @@ class Jogo:
 
             for i, tentativa in enumerate(correcoes):
 
-                s = ""
-
                 minha_pedra_rotulo = obter_rotulo_pedra(tentativas_erradas[i]["minha_pedra"])
 
                 pedra_conexao_rotulo = obter_rotulo_pedra(tentativas_erradas[i]["pedra_alvo"])
 
-                s += f"======================================================\n"
-                s += f"=== {i+1}º tentativa incorreta de {self.__apelido} ===\n"
-                s += f" - Peça que tentou jogar: {minha_pedra_rotulo}\n"
-                s += f"  `--> Suas funções: {tentativa[0]}\n\n"
+                formatado.append(f"======================================================")
+                formatado.append(f"=== {i+1}º tentativa incorreta de {self.__apelido} ===")
+                formatado.append(f" - Peça que tentou jogar: {minha_pedra_rotulo}")
+                formatado.append(f"  `--> Suas funções: {tentativa[0]}")
 
-                s += f" - Peça que tentou conectar a: {pedra_conexao_rotulo}\n"
-                s += f"  `--> Suas funções: {tentativa[1]}\n"
+                formatado.append(f" - Peça que tentou conectar a: {pedra_conexao_rotulo}")
+                formatado.append(f"  `--> Suas funções: {tentativa[1]}")
 
-                formatado.append(s)
+                formatado.append("")
 
             return "".join(formatado) if retornar_string == True else formatado
-
-

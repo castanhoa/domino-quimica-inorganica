@@ -27,8 +27,10 @@ class TelaDeJogo(classeTela):
         self.mao_bot = MaoBot((self.largura // 2 - int(200 * self.escala), int(self.altura * 0.18)),
         int(60 * self.escala))
         
-        self.registrar_rect("botao_Monte", self.largura - 200, (self.altura - 250) // 2, 150, 250)
+        self.registrar_rect("botao_Monte", self.largura - 250, (self.altura - 250) // 2, 150, 250)
         self.registrar_rect("botao_Voltar", int(self.largura * 0.01),
+                            int(self.altura * 0.86), int(200 * self.escala), int(50 * self.escala))
+        self.registrar_rect("botao_Passar", int(self.largura * 0.8),
                             int(self.altura * 0.86), int(200 * self.escala), int(50 * self.escala))
         
         self.tamanho_peca_player = (int(70 * self.escala), int(140 * self.escala))
@@ -36,6 +38,7 @@ class TelaDeJogo(classeTela):
         self.tamanho_monte = (int(150 * self.escala), int(250 * self.escala))
 
         self.cor_botao_atual_voltar = [255, 255, 255]
+        self.cor_botao_atual_passar = [255, 255, 255]
         self.velocidade_animacao = 0.1
 
         self.pecaPlayer = pygame.transform.scale(pygame.image.load(imgs_paths.PECAPLAYER_PATH),
@@ -50,7 +53,7 @@ class TelaDeJogo(classeTela):
         self.fonte = pygame.font.SysFont("roboto", tamanho_fonte(20))
         
         self.logo = pygame.image.load(imgs_paths.LOGOTIPO_PATH)
-        self.mesa = Mesa((self.largura // 2, self.altura // 2), self.escala)
+        self.mesa = Mesa((self.largura // 2, self.altura // 2), (0.8 * self.escala))
         self.mao = Mao((self.largura // 2 - int(275 * self.escala), self.altura // 2 + int(220 * self.escala)), int(80 * self.escala))
         
         self.fonte = pygame.font.SysFont("roboto", tamanho_fonte(20))
@@ -87,6 +90,9 @@ class TelaDeJogo(classeTela):
                 self.proxima_tela = "inicio"
                 self.rodando = False
 
+            if self.botao_Passar.collidepoint(evento.pos):
+                self.objJogatina.rodada.incrementar()
+
             for peca in self.mao.pecas:
                 if peca.get_rect().collidepoint(evento.pos):
                     peca.angulo = 180
@@ -108,25 +114,42 @@ class TelaDeJogo(classeTela):
             cor_alvo_voltar = ajustar_cor(200, 200, 200)
         else:
             cor_alvo_voltar = ajustar_cor(255, 255, 255)
+        
+        if self.botao_Passar.collidepoint(mouse_pos):
+            cor_alvo_passar = ajustar_cor(200, 200, 200)
+        else:
+            cor_alvo_passar = ajustar_cor(255, 255, 255)
 
         for i in range(3):
             self.cor_botao_atual_voltar[i] += (cor_alvo_voltar[i] - self.cor_botao_atual_voltar[i]) * self.velocidade_animacao
         
+        for i in range(3):
+            self.cor_botao_atual_passar[i] += (cor_alvo_passar[i] - self.cor_botao_atual_passar[i]) * self.velocidade_animacao
+        
         cor_botao_voltar = tuple(int(c) for c in self.cor_botao_atual_voltar)
+        cor_botao_passar = tuple(int(c) for c in self.cor_botao_atual_passar)
 
         pygame.draw.rect(self.tela, cor_botao_voltar, self.botao_Voltar, border_radius=8)
         pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Voltar, 2, border_radius=8)
 
+        pygame.draw.rect(self.tela, cor_botao_passar, self.botao_Passar, border_radius=8)
+        pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Passar, 2, border_radius=8)
+
         texto_botao_voltar = self.fonte.render("Voltar", True, ajustar_cor(0, 0, 0))
         self.tela.blit(texto_botao_voltar, texto_botao_voltar.get_rect(center=self.botao_Voltar.center))
+
+        texto_botao_passar = self.fonte.render("Passar vez", True, ajustar_cor(0, 0, 0))
+        self.tela.blit(texto_botao_passar, texto_botao_passar.get_rect(center=self.botao_Passar.center))
 
         pecas_restantes_monte = self.fonte.render(f"Peças restantes: {len(self.objJogatina.jogo.monte)}", True, ajustar_cor(0, 0, 0))
         texto_rect = pecas_restantes_monte.get_rect(centerx=self.botao_Monte.centerx, top=self.botao_Monte.bottom + 10)
 
         pygame.draw.rect(self.tela, ajustar_cor(255, 0, 0), (0, 0, self.largura, int(self.altura * 0.15)))
+
         self.tela.blit(self.MontePecas, self.botao_Monte.topleft)
         self.tela.blit(pecas_restantes_monte, texto_rect)
         self.tela.blit(self.logo, (int(self.largura * 0.03), int(self.altura * 0.16)))
+
         if self.tempo_notificacao > 0:
             texto = self.fonte.render(
                 self.notificacao,

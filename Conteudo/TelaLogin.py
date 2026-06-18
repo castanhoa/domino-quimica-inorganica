@@ -16,8 +16,8 @@ class TelaLogin(classeTela):
 
         self.cascaUsuario = cascaUsuario
 
-        self.registrar_rect("input_Login", self.largura // 2 - 100, self.altura // 2 - 50, 200, 50)
-        self.registrar_rect("input_Senha", self.largura // 2 - 100, self.altura // 2 + 25, 200, 50)
+        self.registrar_rect("input_Login", self.largura // 2 - 250, self.altura // 2 - 50, 500, 50)
+        self.registrar_rect("input_Senha", self.largura // 2 - 250, self.altura // 2 + 25, 500, 50)
         self.registrar_rect("botao_Entrar", self.largura // 2 - 100, self.altura // 2 + 150, 200, 50)
 
         self.cor_botao_atual = [255, 255, 255]
