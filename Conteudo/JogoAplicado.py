@@ -5,31 +5,36 @@ import random
 # import Imagens.CaminhosImagens as imgs_paths
 
 import time
+import threading
 
 # vez do jogador é quando:
 # (self.rodada + self.rodada_offset) % 2 == 0
+
+class ClasseRodada:
+    def __init__(self, offset:int):
+        self.__rodada = offset
+
+    def incrementar(self):
+        self.__rodada += 1
+
+    def get_vez(self):
+        return (self.__rodada) % 2
+
 
 class Jogatina:
     def __init__(self, objAluno, tela_de_jogo):
         self.jogo = Jogo(objAluno=objAluno)
     
         self.tela = tela_de_jogo
+        
+        # rodada_offset = random.randint(0,1)
+        self.rodada = ClasseRodada(offset=random.randint(0,1))
 
-        self.rodada = 0
-
-        self.rodada_offset = random.randint(0,1)
         self.jogo_finalizado = False
 
         self.tempo_inicio_partida = -1
         self.tempo_fim_partida = -1
 
-    def get_vez(self):
-        return (self.rodada + self.rodada_offset) % 2
-
-        # if vez == 0:
-        #     return vez, self.jogo.jogador_principal, self.tela.mao
-        # else:
-        #     return vez, self.jogo.jogador_IA, self.tela.mao_bot
 
     def converter_pedra_back_para_front(self, objPedra, posicao, is_player:bool):
         id_pedra = str(hash(objPedra))
@@ -80,8 +85,8 @@ class Jogatina:
             if ui_peca not in self.tela.mesa.pecas:
                 self.tela.mesa.adicionar_peca(ui_peca, (0 if i == 0 else -1))
 
-        print(f"LEN(TABULEIRO) = {len(self.jogo.tabuleiro)}")
-        print(f"LEN(MESA) = {len(self.tela.mesa.pecas)}")
+        #print(f"LEN(TABULEIRO) = {len(self.jogo.tabuleiro)}")
+        #print(f"LEN(MESA) = {len(self.tela.mesa.pecas)}")
 
 
     def get_jogada(self, minha_mao, peca_front_conectar, extremidade:int):
@@ -96,7 +101,7 @@ class Jogatina:
     
     def fazer_jogada_usuario(self, peca_front_conectar):
 
-        if self.get_vez() != 0:
+        if self.rodada.get_vez() != 0:
             print("Não é a vez do usuário, e sim do bot.")
             return
 
@@ -107,7 +112,7 @@ class Jogatina:
             self.get_jogada(minha_mao, peca_front_conectar, -1)
         ]
         
-        self.rodada += 1
+        self.rodada.incrementar()
 
         for pot_jogada in jogadas:
             jogada = self.jogo.jogador_principal.inserir_pedra(*pot_jogada)
@@ -119,11 +124,11 @@ class Jogatina:
 
 
     def comprar_peca_usuario(self):
-        if self.get_vez() != 0:
+        if self.rodada.get_vez() != 0:
             print("Não é a vez do usuário, e sim do bot.")
             return
         
-        self.rodada += 1
+        self.rodada.incrementar()
 
         self.jogo.jogador_principal.comprar_pedra()
         
@@ -134,21 +139,26 @@ class Jogatina:
 
         if self.jogo_finalizado:
             print("JOGO FINALIZADO")
+            self.tela.proxima_tela = "fim_de_jogo"
             return True
+        
+        if self.rodada.get_vez() == 0:
+            self.tela.mudar_turno("jogador")
+        else:
+            self.tela.mudar_turno("bot")
 
         self.atualizar_pedras_ui()
-        self.jogo_finalizado = self.jogo.resultado(self.tempo_fim_partida-self.tempo_inicio_partida)
+        self.jogo_finalizado, _, _ = self.jogo.resultado(self.tempo_fim_partida-self.tempo_inicio_partida)
         if self.jogo_finalizado:
             print("JOGO FINALIZADO")
             return True
         
         self.tempo_fim_partida = time.perf_counter()
-        print(f"VEZ: {self.get_vez()}")
+        #print(f"VEZ: {self.rodada.get_vez()}")
             
-        if self.get_vez() == 1:
-            self.jogo.jogador_IA.jogada_ia()
+        if self.rodada.get_vez() == 1:
+            threading.Thread(target=self.jogo.jogador_IA.jogada_ia, args=[self.rodada]).start()
 
-            self.rodada += 1
 
     def iniciar_partida(self):
         self.tempo_inicio_partida = time.perf_counter()

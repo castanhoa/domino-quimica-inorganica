@@ -19,7 +19,7 @@ def obter_url_banco() -> str:
     set DB_NAME=bd_jogo_domino_quimica
     """
     usuario = os.getenv("DB_USER", "root")
-    senha = os.getenv("DB_PASSWORD", "tinCTrom")
+    senha = os.getenv("DB_PASSWORD", "Yoshi574$$")
     host = os.getenv("DB_HOST", "localhost")
     porta = os.getenv("DB_PORT", "3306")
     nome_banco = os.getenv("DB_NAME", "bd_jogo_domino_quimica")
@@ -43,11 +43,11 @@ class Turma(Base):
 class Aluno(Base):
     __tablename__ = "aluno"
 
-    id_aluno: Mapped[int] = mapped_column(
-        Integer,
-        primary_key=True,
-        autoincrement=True
-    )
+    # id_aluno: Mapped[int] = mapped_column(
+    #     Integer,
+    #     primary_key=True,
+    #     autoincrement=True
+    # )
 
     nome_aluno: Mapped[str] = mapped_column(
         String(75),
@@ -56,7 +56,9 @@ class Aluno(Base):
 
     email_aluno: Mapped[str] = mapped_column(
         String(75),
-        nullable=False
+        nullable=False,
+        primary_key=True
+
     )
 
     hash_senha_aluno: Mapped[str] = mapped_column(
@@ -93,12 +95,6 @@ class Aluno(Base):
 class Professor(Base):
     __tablename__ = "professor"
 
-    id_prof: Mapped[int] = mapped_column(
-        Integer,
-        primary_key=True,
-        autoincrement=True
-    )
-
     nome_prof: Mapped[str] = mapped_column(
         String(75),
         nullable=False
@@ -106,7 +102,9 @@ class Professor(Base):
 
     email_prof: Mapped[str] = mapped_column(
         String(75),
-        nullable=False
+        nullable=False,
+        primary_key=True
+
     )
 
     hash_senha_prof: Mapped[str] = mapped_column(
@@ -182,6 +180,7 @@ def pegar_dados_alunos(dado_determinante: String, id_turma: int) -> list[Aluno]:
             for aluno in alunos
             ]
     
+# ARRUMAR
 def pegar_instancia_alunos(id_aluno, lista):
         with obter_sessao() as sessao:
             aluno = sessao.query(Aluno).filter(Aluno.id == id_aluno)

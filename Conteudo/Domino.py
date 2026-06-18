@@ -2,8 +2,6 @@ import random
 
 from Conteudo import Banco
 
-NUMERO_DE_PEDRAS = 32
-
 correspondecias = {
   
 'Acido':['HCl', 'HCN','Hl','H2S','HF','H2CrO4', 'Liberam\nH+ em so-\nlução aquosa', 'Geralmente\nsão azedos'], 
@@ -86,11 +84,11 @@ def inicializar_pedra(valores_raw:list):
 
   return valores_cooked
 
-def obter_todas_pedras():
+def obter_todas_pedras(numero_de_pedras):
   pedra_lista = []
 
-  for id in range(1, NUMERO_DE_PEDRAS + 1):
-    pedra_atual = Banco.pegar_valor('pecas', id)
+  for id in range(1, numero_de_pedras + 1):
+    pedra_atual = Banco.pegar_valor('pecas', ((id - 1) % 32) + 1)
 
     pedra_processada = inicializar_pedra(pedra_atual)
     

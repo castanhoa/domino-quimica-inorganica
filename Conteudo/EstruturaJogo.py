@@ -1,9 +1,8 @@
 from Conteudo import Domino
 import random
 import copy
-import time
 
-quantia_total_pedras = 28
+import time
 
 def sub_lists(l0:list, l1:list):
     return list( set(l0) - set(l1) )
@@ -66,9 +65,16 @@ class Jogo:
         
         self.objAluno = objAluno
 
+        self.ia_jogando = False
+
         self.difficuldade = objAluno.obter_dificuldade()
 
-        self.todas_pedras_originais = Domino.obter_todas_pedras()
+        self.todas_pedras_originais = Domino.obter_todas_pedras(7*5)
+
+        quantia_total_pedras = len(self.todas_pedras_originais)
+
+        print((quantia_total_pedras))
+
         todas_pedras = copy.copy(self.todas_pedras_originais)
 
         self.tabuleiro = random.sample(todas_pedras, 1)
@@ -88,7 +94,7 @@ class Jogo:
         self.jogador_IA.inicializar_pedras(jog_ia_pedras)
         todas_pedras = sub_lists(todas_pedras, self.jogador_IA.get_pedras())
 
-    def resultado(self, delta_t):
+    def resultado(self, delta_t=None):
 
         jogo_trancado = True
         jogo_finalizado = False
@@ -124,7 +130,7 @@ class Jogo:
             aluno_venceu = True
 
         if jogo_finalizado != True:
-            return False
+            return False, None, None
 
         tentativas_conexao, tentativas_conexao_erradas = self.jogador_principal.get_tentativas_conexao()
 
@@ -132,9 +138,10 @@ class Jogo:
         len_tentativas_conexao_certas = len_tentativas_conexao - len(tentativas_conexao_erradas)
 
         # atualizar dados do aluno
-        self.objAluno.resultado(aluno_venceu, len_tentativas_conexao, len_tentativas_conexao_certas, delta_t)
+        if not delta_t is None:
+            self.objAluno.resultado(aluno_venceu, len_tentativas_conexao, len_tentativas_conexao_certas, delta_t)
 
-        return True
+        return True, aluno_venceu, self.jogador_principal.get_correcoes_dos_erros(True)
 
     class Jogador:
         def __init__(self, jogo:Jogo, apelido):
@@ -151,7 +158,17 @@ class Jogo:
         def get_pedras(self):
             return copy.copy(self.__pedras)
         
-        def jogada_ia(self):
+        def jogada_ia(self, objRodada):
+
+            if self.jogo.ia_jogando == True:
+                return
+            
+            self.jogo.ia_jogando = True
+
+            t = random.random() * 1.25 + 1
+
+            time.sleep(t)
+
             tabuleiro = self.jogo.tabuleiro
 
             chance_erro = min(1, max(0.5, 1-self.jogo.difficuldade))
@@ -160,7 +177,10 @@ class Jogo:
             pedra_extremidade_1 = tabuleiro[-1]
 
             possiveis_jogadas = []
-            
+    
+            objRodada.incrementar()
+            self.jogo.ia_jogando = False
+
             for indice_minha_pedra, minha_pedra in enumerate(self.__pedras):
                 if Domino.deep_e_compativel(minha_pedra, pedra_extremidade_0):
                     possivel_jogada = {
@@ -181,14 +201,16 @@ class Jogo:
 
             num_jogadas_erradas = int((len(possiveis_jogadas))*chance_erro / max(0.1, 1 - chance_erro))
 
-            for _ in range(num_jogadas_erradas):
-                possivel_jogada = {
-                        'indice_minha_pedra': random.randint(0, len(self.__pedras) - 1), 
-                        'pedra_alvo': self.jogo.tabuleiro[random.randint(-1,0)],
-                        'cima': True if random.randint(0,1) == 1 else False,
-                        }
-                possiveis_jogadas.append(possivel_jogada)            
+            if len(possiveis_jogadas) > 0:
+                for _ in range(num_jogadas_erradas):
+                    possivel_jogada = {
+                            'indice_minha_pedra': random.randint(0, len(self.__pedras) - 1), 
+                            'pedra_alvo': self.jogo.tabuleiro[random.randint(-1,0)],
+                            'cima': True if random.randint(0,1) == 1 else False,
+                            }
+                    possiveis_jogadas.append(possivel_jogada)       
 
+            
             if len(possiveis_jogadas) > 0:
                 jogada_escolhida = random.choice(possiveis_jogadas)
 

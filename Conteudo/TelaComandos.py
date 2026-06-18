@@ -1,16 +1,17 @@
 from Conteudo.Acessibilidade import tamanho_fonte, ajustar_cor
 from Conteudo.Tela import classeTela
+
+from Conteudo.Imagens import CaminhosImagens as images_paths
+
 import pygame
-import Conteudo.Imagens.CaminhosImagens as imgs_paths
 
-
-class TelaRegras(classeTela):
+class TelaComandos(classeTela):
     def __init__(self, objUsuario):
         super().__init__(objUsuario=objUsuario)
 
         self.escala = self.altura / 1080
         self.registrar_rect("botao_Voltar", self.largura // 2 - 100, self.altura // 2 + 225, 200, 50)
-        self.registrar_rect("regras", self.largura // 2 - 350, self.altura // 2 - 200, 700, 400)
+        self.registrar_rect("comandos", self.largura // 2 - 200, self.altura // 2 - 150, 400, 300)
 
         self.cor_botao_normal = ajustar_cor(255, 255, 255)
         self.cor_botao_hover = ajustar_cor(200, 200, 200)
@@ -19,7 +20,7 @@ class TelaRegras(classeTela):
         self.velocidade_animacao = 0.1
 
         self.fonte = pygame.font.SysFont("roboto", tamanho_fonte(20))
-        self.logo = pygame.image.load(imgs_paths.LOGOTIPO_PATH)
+        self.logo = pygame.image.load(images_paths.LOGOTIPO_PATH)
 
         pygame.display.set_icon(self.logo)
     
@@ -54,16 +55,13 @@ class TelaRegras(classeTela):
 
         pygame.draw.rect(self.tela, cor_botao_voltar, self.botao_Voltar, border_radius=8)
         pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Voltar, 2, border_radius=8)
-        pygame.draw.rect(self.tela, ajustar_cor(0, 0, 0), self.regras, 2, border_radius=8)
+        pygame.draw.rect(self.tela, ajustar_cor(0, 0, 0), self.comandos, 2, border_radius=8)
 
         texto_botao_voltar = self.fonte.render("Voltar", True, ajustar_cor(0, 0, 0))
-        texto_regras = self.fonte.render("Regras do Jogo:\n\n"
-                        "1. O jogo consiste em formar pares de peças com elementos\n"
-                        "químicos e propriedades correspondentes.\n\n"
-                        "2. Elementos químicos da mesma função inogânica são cor-\nrespondentes\n\n"
-                        "3. O jogador e o bot alternam turnos para posicionar suas\n"
-                        "peças no tabuleiro.\n\n"
-                            "4. O jogo termina quando o jogador ou o bot estiverem sem\npeças, ou o jogo estiver trancado.\n\n", True, ajustar_cor(0, 0, 0))
+        texto_comandos = self.fonte.render("F1 - Diminuir tamanho da fonte\n\nF2 - Aumentar tamanho da fonte\n\n"
+                                           "F3 - Modo de Cores Padrão\n\nF4 - Modo Deuteranopia\n\n"
+                                           "F5 - Modo Protanopia\n\nF6 - Modo Tritanopia\n\n"
+                                           , True, ajustar_cor(0, 0, 0))
         
         self.tela.blit(texto_botao_voltar, texto_botao_voltar.get_rect(center=self.botao_Voltar.center))
-        self.tela.blit(texto_regras, texto_regras.get_rect(top=self.regras.top + 10, centerx=self.regras.centerx))
+        self.tela.blit(texto_comandos, texto_comandos.get_rect(top=self.comandos.top + 10, centerx=self.comandos.centerx))

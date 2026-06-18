@@ -3,15 +3,19 @@ from Conteudo.Tela import classeTela
 import pygame
 import Conteudo.Imagens.CaminhosImagens as imgs_paths
 
+from Conteudo.Aluno import Aluno
 
 class TelaInicial(classeTela):
     def __init__(self, objUsuario):
         super().__init__(objUsuario=objUsuario)
 
+        self.__perfil = "aluno" if isinstance(objUsuario, Aluno) else "professor"
+
         self.registrar_rect("botao_Iniciar", self.largura // 2 - 100, self.altura // 2 + 25, 200, 50)
-        self.registrar_rect("botao_Tela_Relatorio", self.largura // 2 - 100, self.altura // 2 + 100, 200, 50)
-        self.registrar_rect("botao_Estatisticas", self.largura // 2 - 100, self.altura // 2 + 175, 200, 50)
-        self.registrar_rect("botao_Regras", self.largura // 2 - 100, self.altura // 2 + 250, 200, 50)
+        self.registrar_rect("botao_Tela_Relatorio", self.largura // 2 - 100, self.altura // 2 + 25, 200, 50)
+        self.registrar_rect("botao_Regras", self.largura // 2 - 100, self.altura // 2 + 100, 200, 50)
+        self.registrar_rect("botao_Comandos", self.largura // 2 - 100, self.altura // 2 + 175, 200, 50)
+        self.registrar_rect("botao_Estatisticas", self.largura // 2 - 100, self.altura // 2 + 250, 200, 50)
 
         self.cor_botao_normal = ajustar_cor(255, 255, 255)
         self.cor_botao_hover = ajustar_cor(200, 200, 200)
@@ -20,7 +24,8 @@ class TelaInicial(classeTela):
         self.cor_botao_atual_relatorio = [255, 255, 255]
         self.cor_botao_atual_estatisticas = [255, 255, 255]
         self.cor_botao_atual_regras = [255, 255, 255]
-        
+        self.cor_botao_atual_comandos = [255, 255, 255]
+
         self.velocidade_animacao = 0.1
 
         self.fonte = pygame.font.SysFont("roboto", tamanho_fonte(20))
@@ -34,21 +39,28 @@ class TelaInicial(classeTela):
 
     def tratar_eventos(self, evento):
         if evento.type == pygame.MOUSEBUTTONDOWN:
-            if self.botao_Iniciar.collidepoint(evento.pos):
-                self.proxima_tela = "jogo"
-                self.rodando = False
-            
-            if self.botao_Tela_Relatorio.collidepoint(evento.pos):
-                self.proxima_tela = "relatorio"
-                self.rodando = False
-            
-            if self.botao_Estatisticas.collidepoint(evento.pos):
-                self.proxima_tela = "estatisticas"
-                self.rodando = False
-            
             if self.botao_Regras.collidepoint(evento.pos):
                 self.proxima_tela = "regras"
                 self.rodando = False
+            
+            if self.botao_Comandos.collidepoint(evento.pos):
+                self.proxima_tela = "comandos"
+                self.rodando = False
+            #------------------------
+
+            if self.__perfil == "aluno":
+                if self.botao_Iniciar.collidepoint(evento.pos):
+                    self.proxima_tela = "jogo"
+                    self.rodando = False
+
+                if self.botao_Estatisticas.collidepoint(evento.pos):
+                    self.proxima_tela = "estatisticas"
+                    self.rodando = False
+
+            if self.__perfil == "professor":
+                if self.botao_Tela_Relatorio.collidepoint(evento.pos):
+                    self.proxima_tela = "relatorio"
+                    self.rodando = False
 
     def recriar_fontes(self):
         self.fonte = pygame.font.SysFont("roboto", tamanho_fonte(20))
@@ -56,6 +68,8 @@ class TelaInicial(classeTela):
 
     def desenhar(self):
         self.tela.fill(ajustar_cor(255, 255, 255))
+        self.tela.blit(self.logo, (50, 175))
+        
         mouse_pos = pygame.mouse.get_pos()
 
         tamanho_faixa = int(self.altura * 0.15)
@@ -90,6 +104,15 @@ class TelaInicial(classeTela):
         else:
             cor_alvo_regras = ajustar_cor(255, 255, 255)
 
+
+        if self.botao_Comandos.collidepoint(mouse_pos):
+            cor_alvo_comandos = ajustar_cor(200, 200, 200)
+        else:
+            cor_alvo_comandos = ajustar_cor(255, 255, 255)
+
+        # ==================================================
+        # ANIMAÇÃO DE COR
+        # ==================================================       
         for i in range(3):
             self.cor_botao_atual_iniciar[i] += (cor_alvo_iniciar[i] - self.cor_botao_atual_iniciar[i]) * self.velocidade_animacao
 
@@ -102,10 +125,15 @@ class TelaInicial(classeTela):
         for i in range(3):
             self.cor_botao_atual_regras[i] += (cor_alvo_regras[i] - self.cor_botao_atual_regras[i]) * self.velocidade_animacao
 
+        for i in range(3):
+            self.cor_botao_atual_comandos[i] += (cor_alvo_comandos[i] - self.cor_botao_atual_comandos[i]) * self.velocidade_animacao
+
         cor_botao_iniciar = tuple(int(c) for c in self.cor_botao_atual_iniciar)
         cor_botao_relatorio = tuple(int(c) for c in self.cor_botao_atual_relatorio)
         cor_botao_estatisticas = tuple(int(c) for c in self.cor_botao_atual_estatisticas)
         cor_botao_regras = tuple(int(c) for c in self.cor_botao_atual_regras)
+        cor_botao_comandos = tuple(int(c) for c in self.cor_botao_atual_comandos)
+
 
         texto_bem_vindo = self.titulo_Fonte.render("Bem-Vindo(a) ao Dominó de Química Inorgânica",
             True, ajustar_cor(0, 0, 0))
@@ -114,24 +142,36 @@ class TelaInicial(classeTela):
 
         self.tela.blit(texto_bem_vindo, titulo_rect)
 
-        pygame.draw.rect(self.tela, cor_botao_iniciar, self.botao_Iniciar, border_radius=8)
-        pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Iniciar, 2, border_radius=8)
+        if self.__perfil == "aluno":
 
-        pygame.draw.rect(self.tela, cor_botao_relatorio, self.botao_Tela_Relatorio, border_radius=8)
-        pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Tela_Relatorio, 2, border_radius=8)
+            pygame.draw.rect(self.tela, cor_botao_iniciar, self.botao_Iniciar, border_radius=8)
+            pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Iniciar, 2, border_radius=8)
 
-        pygame.draw.rect(self.tela, cor_botao_estatisticas, self.botao_Estatisticas, border_radius=8)
-        pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Estatisticas, 2, border_radius=8)
+            pygame.draw.rect(self.tela, cor_botao_estatisticas, self.botao_Estatisticas, border_radius=8)
+            pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Estatisticas, 2, border_radius=8)
+
+            texto_iniciar = self.fonte.render("Começar partida", True, ajustar_cor(0, 0, 0))
+            texto_estatisticas = self.fonte.render("Ver estatísticas", True, ajustar_cor(0, 0, 0))
+
+            self.tela.blit(texto_iniciar, texto_iniciar.get_rect(center=self.botao_Iniciar.center))
+            self.tela.blit(texto_estatisticas, texto_estatisticas.get_rect(center=self.botao_Estatisticas.center))
+
+            if self.__perfil == "professor":
+
+                pygame.draw.rect(self.tela, cor_botao_relatorio, self.botao_Tela_Relatorio, border_radius=8)
+                pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Tela_Relatorio, 2, border_radius=8)
+
+                texto_relatorio = self.fonte.render("Ver relatórios", True, ajustar_cor(0, 0, 0))
+                self.tela.blit(texto_relatorio, texto_relatorio.get_rect(center=self.botao_Tela_Relatorio.center))
 
         pygame.draw.rect(self.tela, cor_botao_regras, self.botao_Regras, border_radius=8)
         pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Regras, 2, border_radius=8)
 
-        texto_botao = self.fonte.render("Começar partida", True, ajustar_cor(0, 0, 0))
-        texto_relatorio = self.fonte.render("Ver relatórios", True, ajustar_cor(0, 0, 0))
-        texto_estatisticas = self.fonte.render("Ver estatísticas", True, ajustar_cor(0, 0, 0))
         texto_regras = self.fonte.render("Regras do Jogo", True, ajustar_cor(0, 0, 0))
-        
-        self.tela.blit(texto_botao, texto_botao.get_rect(center=self.botao_Iniciar.center))
-        self.tela.blit(texto_relatorio, texto_relatorio.get_rect(center=self.botao_Tela_Relatorio.center))
-        self.tela.blit(texto_estatisticas, texto_estatisticas.get_rect(center=self.botao_Estatisticas.center))
         self.tela.blit(texto_regras, texto_regras.get_rect(center=self.botao_Regras.center))
+
+        pygame.draw.rect(self.tela, cor_botao_comandos, self.botao_Comandos, border_radius=8)
+        pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Comandos, 2, border_radius=8)
+
+        texto_comandos = self.fonte.render("Comandos", True, ajustar_cor(0, 0, 0))
+        self.tela.blit(texto_comandos, texto_comandos.get_rect(center=self.botao_Comandos.center))

@@ -13,6 +13,11 @@ class TelaDeJogo(classeTela):
     def __init__(self, objUsuario):
         super().__init__(objUsuario=objUsuario)
 
+        self.turno = "jogador"  # ou "bot"
+
+        self.notificacao = ""
+        self.tempo_notificacao = 0
+
         self.escala = self.altura / 1080
         self.botao_peca = []
         self.mao_bot = MaoBot((self.largura // 2 - int(200 * self.escala), int(self.altura * 0.18)),
@@ -44,12 +49,20 @@ class TelaDeJogo(classeTela):
         self.mesa = Mesa((self.largura // 2, self.altura // 2), self.escala)
         self.mao = Mao((self.largura // 2 - int(275 * self.escala), self.altura // 2 + int(220 * self.escala)), int(80 * self.escala))
         
+        self.fonte = pygame.font.SysFont("roboto", tamanho_fonte(20))
         pygame.display.set_icon(self.logo)
 
         self.objJogatina = Jogatina(objAluno=self.objUsuario, tela_de_jogo=self)
         self.objJogatina.iniciar_partida()
     
+    def mudar_turno(self, novo_turno):
+        self.turno = novo_turno
 
+        if novo_turno == "jogador":
+            self.notificacao = "Sua vez!"
+        else:
+            self.notificacao = "Vez do bot"
+        self.tempo_notificacao = 90  # frames (~1.5s a 60fps)
     def tratar_eventos(self, evento):
 
         if evento.type == pygame.MOUSEBUTTONDOWN:
@@ -92,10 +105,31 @@ class TelaDeJogo(classeTela):
         texto_botao_voltar = self.fonte.render("Voltar", True, ajustar_cor(0, 0, 0))
         self.tela.blit(texto_botao_voltar, texto_botao_voltar.get_rect(center=self.botao_Voltar.center))
 
+        pecas_restantes_monte = self.fonte.render(f"Peças restantes: {len(self.objJogatina.jogo.monte)}", True, ajustar_cor(0, 0, 0))
+        texto_rect = pecas_restantes_monte.get_rect(centerx=self.botao_Monte.centerx, top=self.botao_Monte.bottom + 10)
+
         pygame.draw.rect(self.tela, ajustar_cor(255, 0, 0), (0, 0, self.largura, int(self.altura * 0.15)))
         self.tela.blit(self.MontePecas, self.botao_Monte.topleft)
+        self.tela.blit(pecas_restantes_monte, texto_rect)
         self.tela.blit(self.logo, (int(self.largura * 0.03), int(self.altura * 0.16)))
+        if self.tempo_notificacao > 0:
+            texto = self.fonte.render(
+                self.notificacao,
+                True,
+                ajustar_cor(255, 255, 255)
+            )
 
+            fundo = pygame.Rect(
+                self.largura // 2 - 120,
+                int(self.altura * 0.05),
+                240,
+                50
+            )
+
+            pygame.draw.rect(self.tela, ajustar_cor(0, 128, 0), fundo, border_radius=10)
+
+            self.tela.blit(texto, texto.get_rect(center=fundo.center))
+            self.tempo_notificacao -= 1
         # PEÇAS DA MÃO (COM ANIMAÇÃO)
         for peca in self.mao.pecas:
             peca.atualizar()

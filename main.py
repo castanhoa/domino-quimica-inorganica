@@ -5,6 +5,8 @@ from Conteudo.TelaRelatorio import TelaRelatorio
 from Conteudo.TelaInicial import TelaInicial
 from Conteudo.TelaDeJogo import TelaDeJogo
 from Conteudo.TelaLogin import TelaLogin
+from Conteudo.TelaComandos import TelaComandos
+from Conteudo.TelaFimDeJogo import TelaFimDeJogo
 
 from Conteudo.UsuarioSentinela import UsuarioSentinela
 
@@ -19,7 +21,9 @@ TELAS = {
     "jogo": TelaDeJogo,
     "estatisticas": TelaEstatisticas,
     "relatorio": TelaRelatorio,
-    "regras": TelaRegras
+    "regras": TelaRegras,
+    "comandos": TelaComandos,
+    "fim_de_jogo": TelaFimDeJogo,
 }
 
 def main():
@@ -29,15 +33,21 @@ def main():
 
     tela_atual = TelaLogin(minha_casca_usuario)
 
+
     while tela_atual:
 
         if isinstance(minha_casca_usuario.objUsuario, Aluno):
-            atualizar(minha_casca_usuario.objUsuario) 
+            atualizar(minha_casca_usuario.objUsuario)
 
         metodo_adicional = None
+        booleano_adicional = None
+        string_adicional = None
 
         if hasattr(tela_atual, "objJogatina"):
             metodo_adicional = tela_atual.objJogatina.realizar_rodada
+
+            _, booleano_adicional, string_adicional = tela_atual.objJogatina.jogo.resultado()
+
 
         tela_atual.executar(metodo_adicional)
         proxima = tela_atual.proxima_tela
@@ -46,7 +56,13 @@ def main():
             break
         
         TelaCarregamento.mostrar_loading()
-        tela_atual = TELAS[proxima](minha_casca_usuario.objUsuario)
+        classe_tela_atual = TELAS[proxima]
+        if isinstance(classe_tela_atual, TelaFimDeJogo):
+            tela_atual = classe_tela_atual(minha_casca_usuario.objUsuario, booleano_adicional, string_adicional)
+        
+        else:
+            tela_atual = classe_tela_atual(minha_casca_usuario.objUsuario)
+
 
     pygame.quit()
 
