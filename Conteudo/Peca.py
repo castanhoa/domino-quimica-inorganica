@@ -1,4 +1,5 @@
 import pygame
+from Conteudo.Domino import Pedra
 
 def calcular_tamanho_fonte(texto:str):
     length = len(texto)
@@ -16,8 +17,10 @@ class Peca:
         self.destino = pygame.Vector2(rect.topleft)
         self.referenciaBackend = referenciaBackend
 
-        self.texto_cima = referenciaBackend.valor_0 if publica else ""
-        self.texto_baixo = referenciaBackend.valor_1 if publica else ""
+        self.texto_cima = f"0: {referenciaBackend.valor_0}" if publica else ""
+        self.texto_baixo = f"1: {referenciaBackend.valor_1}" if publica else ""
+
+        self.angulo_fator = 0
 
         self.angulo = 180
         self.velocidade = 0.15
@@ -34,15 +37,17 @@ class Peca:
 
 
     def __eq__(self, value):
-        igual = False
 
-        if not isinstance(value, Peca):
+        if not isinstance(value, Peca) and not isinstance(value, Pedra):
             return False
+        
+        if isinstance(value, Pedra) and self.referenciaBackend.ver_igualdade(value):
+            return True
 
-        if self.referenciaBackend.ver_igualdade(value.referenciaBackend):
-            igual = True
+        elif isinstance(value, Peca) and self.referenciaBackend.ver_igualdade(value.referenciaBackend):
+            return True
 
-        return igual
+        return False
 
     def atualizar(self):
         self.pos += (self.destino - self.pos) * self.velocidade
@@ -94,7 +99,7 @@ class Peca:
         self.destino = pygame.Vector2(pos)
 
     def set_angulo(self, angulo):
-        self.angulo = angulo
+        self.angulo = angulo + self.angulo_fator
 
     def get_rect(self):
         return pygame.Rect(

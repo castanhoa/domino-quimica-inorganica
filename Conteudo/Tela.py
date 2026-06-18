@@ -11,6 +11,8 @@ class classeTela:
         pygame.init()
 
         self.objUsuario = objUsuario
+
+        self.recado_final = None
         
         infoTela = pygame.display.Info()
         largura_monitor = infoTela.current_w

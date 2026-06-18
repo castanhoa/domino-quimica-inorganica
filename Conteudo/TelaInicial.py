@@ -156,13 +156,13 @@ class TelaInicial(classeTela):
             self.tela.blit(texto_iniciar, texto_iniciar.get_rect(center=self.botao_Iniciar.center))
             self.tela.blit(texto_estatisticas, texto_estatisticas.get_rect(center=self.botao_Estatisticas.center))
 
-            if self.__perfil == "professor":
+        if self.__perfil == "professor":
 
-                pygame.draw.rect(self.tela, cor_botao_relatorio, self.botao_Tela_Relatorio, border_radius=8)
-                pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Tela_Relatorio, 2, border_radius=8)
+            pygame.draw.rect(self.tela, cor_botao_relatorio, self.botao_Tela_Relatorio, border_radius=8)
+            pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Tela_Relatorio, 2, border_radius=8)
 
-                texto_relatorio = self.fonte.render("Ver relatórios", True, ajustar_cor(0, 0, 0))
-                self.tela.blit(texto_relatorio, texto_relatorio.get_rect(center=self.botao_Tela_Relatorio.center))
+            texto_relatorio = self.fonte.render("Ver relatórios", True, ajustar_cor(0, 0, 0))
+            self.tela.blit(texto_relatorio, texto_relatorio.get_rect(center=self.botao_Tela_Relatorio.center))
 
         pygame.draw.rect(self.tela, cor_botao_regras, self.botao_Regras, border_radius=8)
         pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Regras, 2, border_radius=8)

@@ -1,5 +1,8 @@
 from Conteudo.Acessibilidade import tamanho_fonte, ajustar_cor
 from Conteudo.Tela import classeTela
+
+from Conteudo.Banco import pegar_dados_alunos
+
 import pygame
 import matplotlib.pyplot as plt
 import numpy as np
@@ -33,6 +36,8 @@ class TelaRelatorio(classeTela):
                 ax.set_title('Gráfico de pizza (exemplo)')
 
                 plt.show()
+
+                print(pegar_dados_alunos())
 
                 
             if self.botao_Voltar.collidepoint(evento.pos):

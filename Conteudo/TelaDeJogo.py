@@ -15,6 +15,10 @@ class TelaDeJogo(classeTela):
 
         self.turno = "jogador"  # ou "bot"
 
+        self.cor_notificacao = ajustar_cor(0, 128, 0)
+
+        self.notificacao_rodando = False
+
         self.notificacao = ""
         self.tempo_notificacao = 0
 
@@ -58,11 +62,18 @@ class TelaDeJogo(classeTela):
     def mudar_turno(self, novo_turno):
         self.turno = novo_turno
 
+        if self.notificacao_rodando == True:
+            return
+        
+        self.notificacao_rodando = True
+
         if novo_turno == "jogador":
             self.notificacao = "Sua vez!"
         else:
             self.notificacao = "Vez do bot"
-        self.tempo_notificacao = 90  # frames (~1.5s a 60fps)
+            
+        self.cor_notificacao = ajustar_cor(0, 128, 0)
+        self.tempo_notificacao = 45  # frames (~1.5s a 60fps)
     def tratar_eventos(self, evento):
 
         if evento.type == pygame.MOUSEBUTTONDOWN:
@@ -85,6 +96,10 @@ class TelaDeJogo(classeTela):
         self.fonte = pygame.font.SysFont("roboto", tamanho_fonte(20))
 
     def desenhar(self):
+
+        if self.proxima_tela == "fim_de_jogo":
+            self.rodando = False
+
         self.tela.fill(ajustar_cor(255, 255, 255))
         self.mao_bot.organizar()
         mouse_pos = pygame.mouse.get_pos()
@@ -126,10 +141,14 @@ class TelaDeJogo(classeTela):
                 50
             )
 
-            pygame.draw.rect(self.tela, ajustar_cor(0, 128, 0), fundo, border_radius=10)
+            pygame.draw.rect(self.tela, self.cor_notificacao, fundo, border_radius=10)
 
             self.tela.blit(texto, texto.get_rect(center=fundo.center))
             self.tempo_notificacao -= 1
+        
+        else:
+            self.notificacao_rodando = False
+
         # PEÇAS DA MÃO (COM ANIMAÇÃO)
         for peca in self.mao.pecas:
             peca.atualizar()
@@ -142,3 +161,14 @@ class TelaDeJogo(classeTela):
         
         for peca in self.mao_bot.pecas:
             peca.desenhar(self.tela)
+
+    def notificar_jogada_invalida(self):
+
+        # if self.notificacao_rodando == True:
+        #     return
+
+        self.notificacao_rodando = True
+
+        self.notificacao = "Jogada inválida!"
+        self.tempo_notificacao = 55
+        self.cor_notificacao = ajustar_cor(128, 0, 0)

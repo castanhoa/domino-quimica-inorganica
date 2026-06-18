@@ -170,26 +170,34 @@ def pegar_valor(table: str, record_id: int) -> list | None:
             return None
 
         return [resultado.dado_0, resultado.dado_1]
-def pegar_dados_alunos(dado_determinante: String, id_turma: int) -> list[Aluno]:
-    with obter_sessao() as sessao:
-        alunos = sessao.query(Aluno).filter(Aluno.id_turma == id_turma).order_by(Aluno.dado_dado_determinante.desc()).all()
-        return [[
-                aluno.nome_aluno,
-                aluno.dado_dado_determinante,
-            ]
-            for aluno in alunos
-            ]
+
     
-# ARRUMAR
-def pegar_instancia_alunos(id_aluno, lista):
-        with obter_sessao() as sessao:
-            aluno = sessao.query(Aluno).filter(Aluno.id == id_aluno)
-            if aluno is None:
-                raise ValueError(f"aluno não encontrado com id {id_aluno}")
-            for obj in lista:
-                if aluno.nome == obj.nome:
-                    return obj
-            return "Erro"
+def pegar_dados_alunos():
+    with obter_sessao() as sessao:
+
+        dict_dados_alunos = {}
+
+        todos_alunos = sessao.scalars(select(Aluno)).all()
+
+
+        for aluno in todos_alunos:
+            sub_dict = {
+                "nome": aluno.nome_aluno,
+                "partidas_jogadas": aluno.partidas_jogadas_aluno,
+                "partidas_vencidas": aluno.partidas_jogadas_vencidas_aluno,
+                "taxa_vitoria": round(100 * aluno.partidas_jogadas_vencidas_aluno / aluno.partidas_jogadas_aluno, 2),
+
+                "tempo_total_jogado_em_segundos": aluno.tempo_total_jogado_aluno,
+                "tempo_por_partida__em_segundos": round(aluno.tempo_total_jogado_aluno / aluno.partidas_jogadas_aluno, 2),
+
+                "conexoes_tentadas": aluno.tentativas_conexao_aluno,
+                "conexoes_acertadas": aluno.tentativas_conexao_corretas_aluno,
+                "taxa_acerto_conexoes": round(100 * aluno.tentativas_conexao_corretas_aluno / aluno.tentativas_conexao_aluno, 2),
+            }
+
+            dict_dados_alunos[aluno.email_aluno] = sub_dict
+
+        return dict_dados_alunos
 
 
 def inicializar_pedra(id_pedra):
@@ -213,7 +221,7 @@ def ver_existencia_de_professor(email_alvo):
 
 def pegar_dados_aluno(email_aluno):
     with obter_sessao() as sessao:
-        aluno = sessao.query(Aluno).filter(Aluno.email_aluno == email_aluno).first()
+        aluno = sessao.query(Aluno).filter_by(email_aluno=Aluno.email_aluno).first()
         if aluno is None:
             raise ValueError(f"aluno não encontrado com email {email_aluno}")
         
@@ -246,7 +254,7 @@ def buscar_senha(correio: str, e_aluno:bool):
             seguranca = sessao.query(Aluno).filter(correio == Aluno.email_aluno).first().hash_senha_aluno
 
         elif e_aluno == False:
-            seguranca = sessao.query(Professor).filter(correio == Professor.email_prof).hash_senha_prof
+            seguranca = sessao.query(Professor).filter(correio == Professor.email_prof).first().hash_senha_prof
       
         else:
             raise(Exception, "Lógica ternária não!")

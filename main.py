@@ -33,21 +33,15 @@ def main():
 
     tela_atual = TelaLogin(minha_casca_usuario)
 
-
     while tela_atual:
 
         if isinstance(minha_casca_usuario.objUsuario, Aluno):
             atualizar(minha_casca_usuario.objUsuario)
 
         metodo_adicional = None
-        booleano_adicional = None
-        string_adicional = None
 
         if hasattr(tela_atual, "objJogatina"):
             metodo_adicional = tela_atual.objJogatina.realizar_rodada
-
-            _, booleano_adicional, string_adicional = tela_atual.objJogatina.jogo.resultado()
-
 
         tela_atual.executar(metodo_adicional)
         proxima = tela_atual.proxima_tela
@@ -55,9 +49,15 @@ def main():
         if proxima is None:
             break
         
+        booleano_adicional = None
+        string_adicional = None
+
+        if not tela_atual.recado_final is None and isinstance(tela_atual, TelaDeJogo):
+            _, booleano_adicional, string_adicional = tela_atual.recado_final
+
         TelaCarregamento.mostrar_loading()
         classe_tela_atual = TELAS[proxima]
-        if isinstance(classe_tela_atual, TelaFimDeJogo):
+        if (classe_tela_atual is TelaFimDeJogo):
             tela_atual = classe_tela_atual(minha_casca_usuario.objUsuario, booleano_adicional, string_adicional)
         
         else:
@@ -65,6 +65,7 @@ def main():
 
 
     pygame.quit()
+    exit()
 
 if __name__ == "__main__":
     main()

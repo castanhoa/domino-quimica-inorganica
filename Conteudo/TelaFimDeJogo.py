@@ -1,5 +1,6 @@
 from Conteudo.Acessibilidade import tamanho_fonte, ajustar_cor
 from Conteudo.Tela import classeTela
+from Conteudo.CaixaDeTextoRolavel import CaixaDeTextoRolavel
 
 from Conteudo.Imagens import CaminhosImagens as images_paths
 
@@ -9,11 +10,16 @@ class TelaFimDeJogo(classeTela):
     def __init__(self, objUsuario, vitoria, correcoes_string):
         super().__init__(objUsuario=objUsuario)
 
+        self.caixa_texto_rolavel = CaixaDeTextoRolavel(self.largura // 2, self.altura // 2, 500, 300, correcoes_string)
+
         self.vitoria = vitoria
         self.correcoes_string = correcoes_string
 
+        if len(correcoes_string) == 0 or correcoes_string is None:
+            self.correcoes_string = ["Você acertou tudo! Parabéns!"]
+
         self.registrar_rect("botao_Voltar", self.largura // 2 - 100, self.altura // 2 + 225, 200, 50)
-        self.registrar_rect("tempo_jogado", self.largura // 2 - 125, self.altura // 2 - 50, 250, 100)
+        self.registrar_rect("texto_correcoes", self.largura // 2 - 125, self.altura // 2 - 50, 250, 100)
 
         self.cor_botao_atual_voltar = [255, 255, 255]
         self.velocidade_animacao = 0.1
@@ -25,6 +31,7 @@ class TelaFimDeJogo(classeTela):
         pygame.display.set_icon(self.logo)
     
     def tratar_eventos(self, evento):
+        self.caixa_texto_rolavel.tratar_eventos(evento)
         if evento.type == pygame.MOUSEBUTTONDOWN:
             if self.botao_Voltar.collidepoint(evento.pos):
                 self.proxima_tela = "inicio"
@@ -34,10 +41,7 @@ class TelaFimDeJogo(classeTela):
         self.fonte = pygame.font.SysFont("roboto", tamanho_fonte(20))
         self.titulo_Fonte = pygame.font.SysFont("roboto", tamanho_fonte(32))
 
-    def desenhar(self, vitoria:bool, string_correcoes_erros:str):
-
-        self.vitoria = vitoria
-
+    def desenhar(self):
         self.tela.fill(ajustar_cor(255, 255, 255))
         self.tela.blit(self.logo, (50, 175))
         mouse_pos = pygame.mouse.get_pos()
@@ -71,9 +75,10 @@ class TelaFimDeJogo(classeTela):
 
         pygame.draw.rect(self.tela, cor_botao_voltar, self.botao_Voltar, border_radius=8)
         pygame.draw.rect(self.tela, ajustar_cor(128, 128, 128), self.botao_Voltar, 2, border_radius=8)
-        pygame.draw.rect(self.tela, ajustar_cor(0, 0, 0), self.tempo_jogado, 2, border_radius=8)
+        pygame.draw.rect(self.tela, ajustar_cor(0, 0, 0), self.texto_correcoes, 2, border_radius=8)
 
-        texto_tempo_jogado = self.fonte.render("Tempo da partida:", True, ajustar_cor(0, 0, 0))
+        #texto_correcoes = self.fonte.render(f"Correções das suas jogadas: {self.correcoes_string}", True, ajustar_cor(0, 0, 0))
         texto_botao_voltar = self.fonte.render("Voltar", True, ajustar_cor(0, 0, 0))
         self.tela.blit(texto_botao_voltar, texto_botao_voltar.get_rect(center=self.botao_Voltar.center))
-        self.tela.blit(texto_tempo_jogado, texto_tempo_jogado.get_rect(top=self.tempo_jogado.top + 10, centerx=self.tempo_jogado.centerx))
+        #self.tela.blit(texto_correcoes, texto_correcoes.get_rect(top=self.texto_correcoes.top + 10, centerx=self.texto_correcoes.centerx))
+        self.caixa_texto_rolavel.desenhar(surface=self.tela)

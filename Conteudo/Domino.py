@@ -24,22 +24,21 @@ class Pedra:
     self.valor_0_conexao = None
     self.valor_1_conexao = None
 
-    self.pedras_conectadas = []
+    self.pedras_conectadas = {0:None, 1:None}
 
   def ver_igualdade(self, value):
     if not isinstance(value, Pedra):
       return False
 
-    return self.valor_0 == value.valor_0 and self.valor_1 == value.valor_1 and self.valor_0_conexao == value.valor_0_conexao and self.valor_1_conexao == value.valor_1_conexao and self.pedras_conectadas == value.pedras_conectadas
+    return self.valor_0 == value.valor_0 and self.valor_1 == value.valor_1 and self.valor_0_conexao == value.valor_0_conexao and self.valor_1_conexao == value.valor_1_conexao #and self.pedras_conectadas == value.pedras_conectadas
 
 
   def __str__(self):
     return f"({self.valor_0} / {self.valor_1})"
 
 def obter_funcao_elemento(valor:str):
-  dicts_keys_list = list(correspondecias.keys())
 
-  if valor in dicts_keys_list:
+  if valor in correspondecias:
     return valor
   else:
     for key, array in correspondecias.items():
@@ -55,12 +54,23 @@ def e_compativel(valor_a:str, valor_b:str):
 def deep_e_compativel(pedra_a:Pedra, pedra_b:Pedra):
   valores_pedra_a = [pedra_a.valor_0, pedra_a.valor_1]
   valores_pedra_b = [pedra_b.valor_0, pedra_b.valor_1]
+  
+  for i_a, val_a in enumerate(valores_pedra_a):
 
-  for val_a in valores_pedra_a:
-    for val_b in valores_pedra_b:
-      if e_compativel(val_a, val_b):
-        return True
-  return False
+    if ((not pedra_a.valor_0_conexao is None) and i_a == 0) or ((not pedra_a.valor_1_conexao is None) and i_a == 1):
+      print("Nah 0")
+      continue
+
+    for i_b, val_b in enumerate(valores_pedra_b):
+
+      if ((not pedra_b.valor_0_conexao is None) and i_b == 0) or ((not pedra_b.valor_1_conexao is None) and i_b == 1):
+        print("Nah 1")
+        continue
+
+      if e_compativel(val_a, val_b) == True:
+        return True, (i_a, i_b)
+      
+  return False, (0, 0)
   
 def obter_descendente_correspondencias(key:str):
   if key in correspondecias.keys():

@@ -14,17 +14,28 @@ class ClasseRodada:
     def __init__(self, offset:int):
         self.__rodada = offset
 
-    def incrementar(self):
+    def incrementar(self, wait:bool=False, usuarioJogandoObj:ClasseUsuarioJogando=None):
+        if wait == True:
+            time.sleep(1.25)
+
         self.__rodada += 1
+
+        if not usuarioJogandoObj is None:
+            usuarioJogandoObj.jogando = False
 
     def get_vez(self):
         return (self.__rodada) % 2
 
+class ClasseUsuarioJogando:
+    def __init__(self):
+        self.jogando = False
 
 class Jogatina:
     def __init__(self, objAluno, tela_de_jogo):
         self.jogo = Jogo(objAluno=objAluno)
     
+        self.usuario_jogando = ClasseUsuarioJogando()
+
         self.tela = tela_de_jogo
         
         # rodada_offset = random.randint(0,1)
@@ -80,7 +91,28 @@ class Jogatina:
         #-------------#
 
         for i, pedra in enumerate(self.jogo.tabuleiro):
+
+            if len(pedra.pedras_conectadas) > 0 and not pedra.pedras_conectadas[0] is None:
+                idx = self.jogo.tabuleiro.index(pedra.pedras_conectadas[0])
+                add = False
+                if pedra.pedras_conectadas[0] in self.tela.mesa.pecas:
+                   add = self.tela.mesa.pecas[self.tela.mesa.pecas.index(pedra.pedras_conectadas[0])].angulo_fator
+                
+                
+                #angulo_fator = 180 + add if idx > i else 0
+                angulo_fator = 0
+
+                # if add:
+                #     angulo_fator += add
+
+                if idx > i:
+                    angulo_fator += 180
+                    
+            else:
+                angulo_fator = 0
+
             ui_peca = self.converter_pedra_back_para_front(pedra, i, True)
+            ui_peca.angulo_fator = angulo_fator
 
             if ui_peca not in self.tela.mesa.pecas:
                 self.tela.mesa.adicionar_peca(ui_peca, (0 if i == 0 else -1))
@@ -101,6 +133,11 @@ class Jogatina:
     
     def fazer_jogada_usuario(self, peca_front_conectar):
 
+        if self.usuario_jogando.jogando == True:
+            return
+        
+        self.usuario_jogando.jogando = True
+
         if self.rodada.get_vez() != 0:
             print("Não é a vez do usuário, e sim do bot.")
             return
@@ -112,15 +149,28 @@ class Jogatina:
             self.get_jogada(minha_mao, peca_front_conectar, -1)
         ]
         
-        self.rodada.incrementar()
+
+        sucesso = False
 
         for pot_jogada in jogadas:
             jogada = self.jogo.jogador_principal.inserir_pedra(*pot_jogada)
 
             if jogada != False:
+                sucesso = True
                 break
+
+        if sucesso == False:
+            self.tela.notificar_jogada_invalida()
+            t = threading.Thread(target=self.rodada.incrementar, args=[True, self.usuario_jogando])
+            t.start()
+
+        else:
+            self.rodada.incrementar()
+            self.usuario_jogando.jogando = False
+
         
         self.atualizar_pedras_ui()
+
 
 
     def comprar_peca_usuario(self):
@@ -138,7 +188,7 @@ class Jogatina:
     def realizar_rodada(self):
 
         if self.jogo_finalizado:
-            print("JOGO FINALIZADO")
+            self.tela.recado_final = self.jogo.resultado(self.tempo_fim_partida-self.tempo_inicio_partida)
             self.tela.proxima_tela = "fim_de_jogo"
             return True
         
@@ -150,6 +200,8 @@ class Jogatina:
         self.atualizar_pedras_ui()
         self.jogo_finalizado, _, _ = self.jogo.resultado(self.tempo_fim_partida-self.tempo_inicio_partida)
         if self.jogo_finalizado:
+            self.tela.recado_final = self.jogo.resultado(self.tempo_fim_partida-self.tempo_inicio_partida)
+            self.tela.proxima_tela = "fim_de_jogo"
             print("JOGO FINALIZADO")
             return True
         
@@ -158,6 +210,7 @@ class Jogatina:
             
         if self.rodada.get_vez() == 1:
             threading.Thread(target=self.jogo.jogador_IA.jogada_ia, args=[self.rodada]).start()
+            self.usuario_jogando.jogando = False
 
 
     def iniciar_partida(self):

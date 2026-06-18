@@ -25,7 +25,7 @@ class Mesa:
 
         espaco = 35
 
-        if ultima.angulo != self.angulo_pecas:
+        if (ultima.angulo % 180) != (self.angulo_pecas % 180):
             espaco -= ultima_rect.width + 5
 
         espaco += ultima_rect.height

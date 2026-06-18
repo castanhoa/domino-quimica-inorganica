@@ -30,25 +30,36 @@ def obter_rotulo_pedra(pedra):
 
     return rotulo
 
-def conectar_pedras(pedra_a, pedra_a_valor_0,  pedra_b, pedra_b_valor_0, conectar_acima:bool, tabuleiro:list):
-
-    pedra_a.pedras_conectadas.append(pedra_b)
-    pedra_b.pedras_conectadas.append(pedra_a)
+def conectar_pedras(pedra_a, pedra_a_valor_0:bool,  pedra_b, pedra_b_valor_0:bool, conectar_acima:bool, tabuleiro:list):
 
     if pedra_a_valor_0 == True:
         if pedra_b_valor_0 == True:
             pedra_a.valor_0_conexao = pedra_b.valor_0
             pedra_b.valor_0_conexao = pedra_a.valor_0
+
+            pedra_a.pedras_conectadas[0] = pedra_b
+            pedra_b.pedras_conectadas[0] = pedra_a
         else:
             pedra_a.valor_0_conexao = pedra_b.valor_1
-            pedra_b.valor_1_conexao = pedra_a.valor_0    
+            pedra_b.valor_1_conexao = pedra_a.valor_0   
+
+            pedra_a.pedras_conectadas[0] = pedra_b
+            pedra_b.pedras_conectadas[1] = pedra_a
     else:
         if pedra_b_valor_0 == True:
             pedra_a.valor_1_conexao = pedra_b.valor_0
             pedra_b.valor_0_conexao = pedra_a.valor_1
+
+            pedra_a.pedras_conectadas[0] = pedra_b
+            pedra_b.pedras_conectadas[0] = pedra_a
+
         else:
             pedra_a.valor_1_conexao = pedra_b.valor_1
-            pedra_b.valor_1_conexao = pedra_a.valor_1   
+            pedra_b.valor_1_conexao = pedra_a.valor_1  
+
+            pedra_a.pedras_conectadas[1] = pedra_b
+            pedra_b.pedras_conectadas[1] = pedra_a
+ 
 
     if pedra_b not in tabuleiro:
         raise(ValueError("Pedra b (pedra conexão) não está no tabuleiro."))
@@ -59,6 +70,7 @@ def conectar_pedras(pedra_a, pedra_a_valor_0,  pedra_b, pedra_b_valor_0, conecta
         tabuleiro.append(pedra_a)
     else:
         tabuleiro.insert(0, pedra_a)
+    return True
 
 class Jogo:
     def __init__(self, objAluno):
@@ -69,7 +81,7 @@ class Jogo:
 
         self.difficuldade = objAluno.obter_dificuldade()
 
-        self.todas_pedras_originais = Domino.obter_todas_pedras(7*5)
+        self.todas_pedras_originais = Domino.obter_todas_pedras(7*2)
 
         quantia_total_pedras = len(self.todas_pedras_originais)
 
@@ -102,13 +114,13 @@ class Jogo:
         if len(self.monte) == 0:
             # ver se a ia esta trancada
             for pedra in self.jogador_IA.get_pedras():
-                if Domino.deep_e_compativel(pedra, self.tabuleiro[0]) or Domino.deep_e_compativel(pedra, self.tabuleiro[-1]):
+                if Domino.deep_e_compativel(pedra, self.tabuleiro[0])[0] or Domino.deep_e_compativel(pedra, self.tabuleiro[-1])[0]:
                     jogo_trancado = False
                     break
             
             # ver se o usuario esta trancado
             for pedra in self.jogador_principal.get_pedras():
-                if Domino.deep_e_compativel(pedra, self.tabuleiro[0]) or Domino.deep_e_compativel(pedra, self.tabuleiro[-1]):
+                if Domino.deep_e_compativel(pedra, self.tabuleiro[0])[0] or Domino.deep_e_compativel(pedra, self.tabuleiro[-1])[0]:
                     jogo_trancado = False
                     break
         else:
@@ -141,7 +153,7 @@ class Jogo:
         if not delta_t is None:
             self.objAluno.resultado(aluno_venceu, len_tentativas_conexao, len_tentativas_conexao_certas, delta_t)
 
-        return True, aluno_venceu, self.jogador_principal.get_correcoes_dos_erros(True)
+        return True, aluno_venceu, self.jogador_principal.get_correcoes_dos_erros(False)
 
     class Jogador:
         def __init__(self, jogo:Jogo, apelido):
@@ -211,7 +223,7 @@ class Jogo:
                     possiveis_jogadas.append(possivel_jogada)       
 
             
-            if len(possiveis_jogadas) > 0:
+            if len(possiveis_jogadas) >= 1:
                 jogada_escolhida = random.choice(possiveis_jogadas)
 
                 indice_minha_pedra = jogada_escolhida['indice_minha_pedra']
@@ -248,7 +260,7 @@ class Jogo:
             else:
                 print(f"JOGADOR {self.__apelido} TENTOU COMPRAR PEDRA, MAS NAO HA MAIS PEDRAS NO MONTE")
 
-        def inserir_pedra(self, indice_minha_pedra, pedra_conexao, extremidade:int):
+        def inserir_pedra(self, indice_minha_pedra, pedra_conexao:Domino.Pedra, extremidade:int):
 
             print("=== TENTATIVA INSERIR PEDRA ===")
             
@@ -260,9 +272,9 @@ class Jogo:
 
             minha_pedra = self.__pedras[indice_minha_pedra]
 
-            dupla = minha_pedra.valor_0 == minha_pedra.valor_1
+            # dupla = minha_pedra.valor_0 == minha_pedra.valor_1
 
-            # eita codigo ineficiente. devera ser melhorado.
+            # CÓDIGO MELHORADO!
                        
             tentativa_conexao = {
                 'minha_pedra': minha_pedra, 
@@ -274,31 +286,29 @@ class Jogo:
 
             sucesso = False
 
-            if (pedra_conexao.valor_0_conexao == None):
-                if Domino.e_compativel(minha_pedra.valor_0, pedra_conexao.valor_0) == True:
-                    sucesso = conectar_pedras (pedra_a=minha_pedra, pedra_a_valor_0=True, pedra_b=pedra_conexao, pedra_b_valor_0=True, conectar_acima=cima, tabuleiro=tabuleiro)
+            num_conexoes_disponiveis = list(pedra_conexao.pedras_conectadas.values()).count(None)
+            
+            deep_e_compat = Domino.deep_e_compativel(pedra_a=minha_pedra, pedra_b=pedra_conexao)
+            coord = deep_e_compat[1]
 
-                    if dupla == True:
-                        conectar_pedras (pedra_a=minha_pedra, pedra_a_valor_0=False, pedra_b=pedra_conexao, pedra_b_valor_0=True, conectar_acima=cima, tabuleiro=tabuleiro)  
-                
-                elif Domino.e_compativel(minha_pedra.valor_1, pedra_conexao.valor_0) == True:
-                    sucesso = conectar_pedras (pedra_a=minha_pedra, pedra_a_valor_0=False, pedra_b=pedra_conexao, pedra_b_valor_0=True, conectar_acima=cima, tabuleiro=tabuleiro)
+            if (num_conexoes_disponiveis) >= 1:
 
-                    if dupla == True:
-                        conectar_pedras (pedra_a=minha_pedra, pedra_a_valor_0=True, pedra_b=pedra_conexao, pedra_b_valor_0=True, conectar_acima=cima, tabuleiro=tabuleiro)
+                if deep_e_compat[0]:
+                    if num_conexoes_disponiveis == 2:
+                        cima = coord[1] == 1
 
-            elif (pedra_conexao.valor_1_conexao == None):
-                if Domino.e_compativel(minha_pedra.valor_0, pedra_conexao.valor_1) == True:
-                    sucesso = conectar_pedras (pedra_a=minha_pedra, pedra_a_valor_0=True, pedra_b=pedra_conexao, pedra_b_valor_0=False, conectar_acima=cima, tabuleiro=tabuleiro)
+                    if coord[0] == coord[1]:
+                        conectar_pedras(pedra_a=minha_pedra, pedra_a_valor_0=(coord[0] == 0), pedra_b=pedra_conexao, pedra_b_valor_0=(coord[0] == 0), conectar_acima=cima, tabuleiro=tabuleiro)
+      
+                    else:
+                        conectar_pedras(pedra_a=minha_pedra, pedra_a_valor_0=(coord[0]==0), pedra_b=pedra_conexao, pedra_b_valor_0=(coord[1]==0), conectar_acima=cima, tabuleiro=tabuleiro)
 
-                    if dupla == True:
-                        conectar_pedras (pedra_a=minha_pedra, pedra_a_valor_0=True, pedra_b=pedra_conexao, pedra_b_valor_0=False, conectar_acima=cima, tabuleiro=tabuleiro)
-                
-                elif Domino.e_compativel(minha_pedra.valor_1, pedra_conexao.valor_1) == True:
-                    sucesso = conectar_pedras (pedra_a=minha_pedra, pedra_a_valor_0=False, pedra_b=pedra_conexao, pedra_b_valor_0=False, conectar_acima=cima, tabuleiro=tabuleiro)
 
-                    if dupla == True:
-                        conectar_pedras (pedra_a=minha_pedra, pedra_a_valor_0=True, pedra_b=pedra_conexao, pedra_b_valor_0=False, conectar_acima=cima, tabuleiro=tabuleiro)
+                    sucesso = True
+                else:
+                    sucesso = False
+
+
 
             if sucesso == False:
                 self.__tentativas_erradas_conexao.append(tentativa_conexao)
@@ -326,70 +336,26 @@ class Jogo:
 
                 correcoes.append([correcao_minha_pedra, correcao_pedra_alvo])
 
-            if retornar_string == True:
-                correcoes
+            formatado = []
 
-            else:
+            for i, tentativa in enumerate(correcoes):
+
                 s = ""
 
-                for i, tentativa in enumerate(correcoes):
+                minha_pedra_rotulo = obter_rotulo_pedra(tentativas_erradas[i]["minha_pedra"])
 
-                    minha_pedra_rotulo = obter_rotulo_pedra(tentativas_erradas[i]["minha_pedra"])
+                pedra_conexao_rotulo = obter_rotulo_pedra(tentativas_erradas[i]["pedra_alvo"])
 
-                    pedra_conexao_rotulo = obter_rotulo_pedra(tentativas_erradas[i]["pedra_alvo"])
+                s += f"======================================================\n"
+                s += f"=== {i+1}º tentativa incorreta de {self.__apelido} ===\n"
+                s += f" - Peça que tentou jogar: {minha_pedra_rotulo}\n"
+                s += f"  `--> Suas funções: {tentativa[0]}\n\n"
 
-                    s += f"======================================================\n"
-                    s += f"=== {i+1}º tentativa incorreta de {self.__apelido} ===\n"
-                    s += f" - Peça que tentou jogar: {minha_pedra_rotulo}\n"
-                    s += f"  `--> Suas funções: {tentativa[0]}\n\n"
+                s += f" - Peça que tentou conectar a: {pedra_conexao_rotulo}\n"
+                s += f"  `--> Suas funções: {tentativa[1]}\n"
 
-                    s += f" - Peça que tentou conectar a: {pedra_conexao_rotulo}\n"
-                    s += f"  `--> Suas funções: {tentativa[1]}\n"
+                formatado.append(s)
 
-                return s, len(tentativas_erradas) / max(1, len(tentativas_totais))
-
-
-
-# # === COISAS PARA TESTES ABAIXO === #
-
-# meu_jogo = Jogo()
-
-# meu_jogador = meu_jogo.jogador_principal
-
-# def exibir_lista_pedras(minhas_pedras):
-#     for i, pedra in enumerate(minhas_pedras):
-#         print(f"--[ PEDRA {i} ]--")
-#         print(pedra.valor_0, " /", pedra.valor_1, "\n")
-
-#     print(f"--[TABULEIRO]--")
-#     tabuleiro_para_print = []
-
-#     for p in meu_jogo.tabuleiro:
-#         tabuleiro_para_print.append(str(p))
-
-#     print(tabuleiro_para_print)
-
-# # LOOP PARA FINS DE TESTE.
-# # MUDE PARA True CASO QUEIRA TESTAR.
-# while False:
-
-#     print("PEDRAS IA: ")
-#     exibir_lista_pedras(meu_jogo.jogador_IA.get_pedras())
-
-#     print("\n -> MINHAS PEDRAS: ")
-#     exibir_lista_pedras(meu_jogador.get_pedras())
-
-#     pedra_conectar_0 = int(input("Digite o indice da sua pedra para conectar: "))
-
-#     pedra_conectar_1 = int(input("Digite a extremidade da pedra do tabuleiro para conectar (0 ou -1): "))
-#     outra_pedra = meu_jogo.tabuleiro[pedra_conectar_1]
-
-#     meu_jogador.inserir_pedra(pedra_conectar_0, outra_pedra, pedra_conectar_1)
-
-#     print("VEZ DA IA:\n")
-
-#     meu_jogo.jogador_IA.jogada_ia()
-
-#     time.sleep(0.6)
+            return "".join(formatado) if retornar_string == True else formatado
 
 
